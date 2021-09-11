@@ -4,4 +4,3 @@ backend/.env
 backend/.DS_Store
 .idea
 frontend_tests
-frontend
