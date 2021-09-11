@@ -1,4 +1,7 @@
 backend/node_modules
-backend/images
+backend/gif
 backend/.env
 .idea
+frontend_tests
+frontend
+
