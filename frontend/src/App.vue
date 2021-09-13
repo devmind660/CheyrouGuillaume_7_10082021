@@ -1,43 +1,55 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-  <div id="app">
-    <nav>
-      <HomeLink />
-      <a href="/about">À propos</a>
-      <a href="/contact">Contact</a>
-    </nav>
-    <p>Bienvenue sur notre page d'<HomeLink /></p>
-    <nav>
-      <NavLink url="/" text="Accueil" />
-      <NavLink url="/about" text="À propos" />
-      <NavLink url="/contact" text="Contact" />
-    </nav>
-  </div>
+  <header>
+    <img alt="Groupomania logo" src="./assets/logos/icon-left-font-monochrome-black.svg">
+    <div id="nav">
+      <router-link to="/">Accueil</router-link>&emsp;
+      <router-link to="/user">Compte</router-link>
+    </div>
+  </header>
+  <router-view />
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-import HomeLink from './components/HomeLink.vue'
-import NavLink from './components/NavLink.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld,
-    HomeLink,
-    NavLink,
-  }
-}
-</script>
-
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  #app {
+    background-color: #2A52BE;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+
+    header {
+      background-color: white;
+      line-height: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+
+      img {
+        width: 200px
+      }
+
+      #nav {
+          display: flex;
+
+        a {
+          color: #2A52BE;
+          font-weight: bold;
+          text-decoration: none;
+          border: 2px #2A52BE solid;
+          border-radius: 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 30px;
+          width: 80px;
+
+          &.router-link-exact-active {
+            background-color: #2A52BE;
+            color: white;
+          }
+        }
+      }
+    }
+  }
 </style>
