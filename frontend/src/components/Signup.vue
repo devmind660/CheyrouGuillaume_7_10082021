@@ -1,28 +1,57 @@
 <template>
-  <form id="login" action="http://localhost:3000/api/user/login" method="POST">
-    <fieldset>
-      <legend>Connexion</legend>
-      <label for="email2">Adresse email : </label>
-      <input v-model="user.email" type="email" id="email2" required />
-      <small></small>&ensp;
-      <label for="password2">Mot de passe : </label>
-      <input v-model="user.password" type="password" id="password2" required />
-      <small></small>&emsp;
-      <input type="submit" value="Se connecter">
-    </fieldset>
+  <form id="signup" action="http://localhost:3000/api/auth/signup" method="POST">
+    <div class="inputfield">
+      <label for="usernameSignup">Utilisateur :</label>
+      <input v-model="username" type="text" id="usernameSignup" name="username" required />
+    </div>
+    <div class="inputfield">
+      <label for="emailSignup">Adresse email :</label>
+      <input v-model="email" type="email" id="emailSignup" name="email" required />
+    </div>
+    <div class="inputfield">
+      <label for="passwordSignup">Mot de passe :</label>
+      <input v-model="password" type="password" id="passwordSignup" name="password" required /><br>
+    </div>
+    <div class="inputfield inputfield__link">
+      <p>J'ai déjà un compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="$emit('set-login')">Se connecter</a></p>
+    </div>
+    <div class="inputfield">
+      <input @click="signup()" type="submit" value="Inscription" class="btn">
+      <button @click="signup()" type="submit" class="btn" :class="{'button--disabled' : !validatedFields}">
+        <span v-if="status === 'loading'">Inscription en cours...</span>
+        <span v-else>Inscription</span>
+      </button>
+    </div>
   </form>
 </template>
 
 <script>
+import { mapState } from "vuex"
+
 export default {
   name: 'Signup',
-  data: function () {
-    return {
-      user: {
-        username: '',
-        email: '',
-        password: '',
+  computed: {
+    ...mapState(["status"]),
+
+    validatedFields: function () {
+      if (this.display === 'signup') {
+        return this.username !== "" && this.email !== "" && this.password !== "";
       }
+      return false
+    }
+  },
+  methods: {
+    signup: function () {
+      const self = this;
+      this.$store.dispatch('signup', {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      }).then(function () {
+        self.login();
+      }, function (error) {
+        console.log(error);
+      })
     }
   }
 }

@@ -1,31 +1,52 @@
 <template>
-  <form id="login" action="http://localhost:3000/api/user/signup" method="POST">
-    <fieldset>
-      <legend>Inscription</legend>
-      <label for="username">Nom d'utilisateur : </label>
-      <input v-model="user.username" type="text" id="username" required />
-      <small></small>&ensp;
-      <label for="email">Adresse email : </label>
-      <input v-model="user.email" type="email" id="email" required />
-      <small></small>&emsp;
-      <label for="password">Mot de passe : </label>
-      <input v-model="user.password" type="password" id="password" required />
-      <small></small>&emsp;
-      <input type="submit" value="S'inscrire">
-    </fieldset>
+  <form id="login" action="http://localhost:3000/api/auth/login" method="POST">
+    <div class="inputfield">
+      <label for="emailLogin">Adresse email :</label>
+      <input v-model="email" type="email" id="emailLogin" name="email" required />
+    </div>
+    <div class="inputfield">
+      <label for="passwordLogin">Mot de passe :</label>
+      <input v-model="password" type="password" id="passwordLogin" name="password" required />
+    </div>
+    <div class="inputfield inputfield__link">
+      <p>Je n'ai pas de compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="$emit('set-signup')">S'inscrire</a></p>
+    </div>
+    <div class="inputfield">
+      <button @click="login()" type="submit" class="btn" :class="{'button--disabled' : !validatedFields}">
+        <!-- TODO : "button--disabled" = class bootstrap : trouver un schéma de remplacement -->
+        <span v-if="status === 'loading'">Connexion en cours...</span>
+        <span v-else>Connexion</span>
+      </button>
+    </div>
   </form>
 </template>
 
 <script>
+import { mapState } from "vuex"
+
 export default {
   name: 'Login',
-  data: function () {
-    return {
-      user: {
-        username: '',
-        email: '',
-        password: '',
+  computed: {
+    ...mapState(["status"]),
+
+    validatedFields: function () {
+      if (this.display === 'login') {
+        return this.email !== "" && this.password !== "";
       }
+      return false
+    }
+  },
+  methods: {
+    login: function () {
+      const self = this;
+      this.$store.dispatch('login', {
+        email: this.email,
+        password: this.password,
+      }).then(function () {
+        self.$router.push('/profile');
+      }, function (error) {
+        console.log(error);
+      })
     }
   }
 }

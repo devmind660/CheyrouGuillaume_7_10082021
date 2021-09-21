@@ -1,0 +1,9 @@
+$primary: #2A52BE;
+$secondary: #318CE7;
+
+@mixin white-bloc {
+  background-color: white;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.125);
+  margin: 50px auto;
+  padding: 30px;
+}

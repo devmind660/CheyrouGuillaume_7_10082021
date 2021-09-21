@@ -5,14 +5,15 @@ const jwt = require('jsonwebtoken');
 
 // Inscription
 exports.signup = (req, res) => {
-/*
     let username = req.body.username;
     let email = req.body.email;
     let password = req.body.password;
-*/
+/*
     let username = "Guillaume_Cheyrou";
     let email = "diamondsky660@gmail.com";
     let password = "Guillaume660";
+*/
+    // console.log(req.body);
 
     /* // TODO : fake response, route à débuguée
     return res.status(200).json({ success : true });
@@ -30,7 +31,7 @@ exports.signup = (req, res) => {
                 if (error) {
                     return res.status(400).json({ error: error })
                 }
-                res.status(201).json({ message: 'Compte créé !' });
+                res.status(201).json({ message: 'Utilisateur créé !' });
             });
         })
         .catch((error) => {
