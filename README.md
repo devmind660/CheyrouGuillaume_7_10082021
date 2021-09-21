@@ -2,9 +2,9 @@
 Groupomania
 
 file backend/.env {
-  HOST=localhost
-  DBPORT=8889
-  DBUSER=root
-  PASSWORD=root
+  HOST=localhost,
+  DBPORT=8889,
+  DBUSER=root,
+  PASSWORD=root,
   DATABASE=groupomania
 }
