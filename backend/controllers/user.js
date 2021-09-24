@@ -73,6 +73,20 @@ exports.login = (req, res) => {
     });
 };
 
+// Afficher les infos utilisateur
+exports.showProfile = (req, res) => {
+    const userId = req.body.id;
+
+    const sqlUser = "SELECT * FROM Users WHERE id = ?";
+
+    connection.query(sqlUser, [userId], function (error, result) {
+        if (error) {
+            return res.status(404).json({ error: error })
+        }
+        res.status(200).json({ message: 'Affichage du profil…' });
+    });
+};
+
 /* // Modification du profil
 exports.modifyAccount = (req, res) => {
 
