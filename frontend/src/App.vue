@@ -54,10 +54,11 @@
           display: flex;
           justify-content: center;
           align-items: center;
+          margin-left: 15px;
           height: 30px;
           width: 80px;
-          &:last-child {
-            margin-left: 15px;
+          &:first-child {
+            margin-left: 0;
           }
           &.router-link-exact-active {
             background-color: $primary;
@@ -77,6 +78,10 @@
       width: 100%;
       &:hover {
         background: $secondary;
+      }
+      &[disabled] {
+        background-color: lightgray;
+        cursor: default;
       }
     }
   }

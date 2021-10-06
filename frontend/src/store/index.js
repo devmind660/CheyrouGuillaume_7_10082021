@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 const axios = require('axios');
 
 const instance = axios.create({
-  baseURL: 'http://localhost:300/api/auth'
+  baseURL: 'http://localhost:3000'
 });
 
 let user = localStorage.getItem('user');
@@ -20,7 +20,7 @@ if (!user) {
     user = {
       userId: -1,
       token: '',
-    };
+    };q
   }
 }
 
@@ -60,7 +60,7 @@ export default createStore({
     login: ({commit}, userInfos) => {
       commit('setStatus', 'loading');
       return new Promise((resolve, reject) => {
-        instance.post('/login', userInfos)
+        instance.post('api/auth/login', userInfos)
             .then(function (response) {
               commit('setStatus', '');
               commit('logUser', response.data);
@@ -76,26 +76,26 @@ export default createStore({
       commit('setStatus', 'loading');
       return new Promise((resolve, reject) => {
         commit;
-        instance.post('/signup', userInfos)
+        instance.post('api/auth/signup', userInfos)
             .then(function (response) {
-              commit('setStatus', 'created');
+              commit('setStatus', 'success_signup');
               resolve(response);
             })
             .catch(function (error) {
-              commit('setStatus', 'error_create');
+              commit('setStatus', 'error_signup');
               reject(error);
             });
       });
     },
     getUserInfos: ({commit}) => {
-      instance.post('/infos')
+      instance.post('api/auth/infos')
           .then(function (response) {
-            commit('userInfos', response.data.infos);
+            commit('userInfos', response.data.result[0]);
           })
           .catch(function () {
           });
-    },
-    modules: {
     }
+  },
+  modules: {
   }
 })

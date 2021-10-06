@@ -17,10 +17,6 @@
         </li>
       </ul>
       <p v-else>Chargement du fil…</p>
-      <div class="inputfield">
-        <label for="newPost">Nouveau GIF :</label>
-        <input type="text" id="newPost" name="newPost" required />
-      </div>
     </section>
   </div>
 </template>
@@ -37,6 +33,11 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$store.state.user);
+    if (this.$store.state.user.userId === -1) {
+      this.$router.push('/');
+      return ;
+    }
     fetch('http://localhost:3000/api/posts/')
         .then(res => res.json())
         .then(data => {

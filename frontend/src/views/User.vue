@@ -14,25 +14,21 @@
 import Banner from "@/components/Banner";
 import Signup from "@/components/Login";
 import Login from "@/components/Signup";
-import {mapState} from "vuex";
 
 export default {
   name: 'User',
   data() {
     return {
-      display: 'login',
+      display: 'signup',
     }
   },
   components: {
     Banner, Signup, Login
   },
-  mounted: function () {
+  mounted() {
     if (this.$store.state.user.userId !== -1) {
       this.$router.push('/profile');
     }
-  },
-  computed: {
-    ...mapState(["status"]),
   },
   methods: {
     setLogin() {
@@ -69,7 +65,7 @@ export default {
     }
   }
 
-  form, div#profile, ul {
+  form, div#login, div#signup, div#profile, ul {
     width: 100%;
 
     .inputfield {
@@ -86,6 +82,15 @@ export default {
         align-items: flex-start;
       }
 
+      &__link p {
+        margin-left: auto;
+
+        a:hover {
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+
       label {
         margin-right: 10px;
         width: 200px;
@@ -93,6 +98,7 @@ export default {
           margin-bottom: 5px;
         }
       }
+
       input {
         font-size: 1rem;
         outline: none;
@@ -100,23 +106,16 @@ export default {
         padding: 8px 10px;
         width: 100%;
         transition: all 0.3s ease;
-      }
-      input[required] {
-        border: 1px solid $primary;
-        &:focus {
-          border: 1px solid silver;
+        &[required] {
+          border: 1px solid $primary;
+          &:focus {
+            border: 1px solid silver;
+          }
         }
-      }
-      input[disabled] {
-        background-color: ghostwhite;
-        border: 1px solid lightgray;
-      }
-    }
-    .inputfield__link p {
-      margin-left: auto;
-      a:hover {
-        text-decoration: underline;
-        cursor: pointer;
+        &[disabled] {
+          background-color: ghostwhite;
+          border: 1px solid lightgray;
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <form id="login" action="http://localhost:3000/api/auth/login" method="POST">
+  <div id="login"> <!--action="http://localhost:3000/api/auth/login" method="POST"-->
     <div class="inputfield">
       <label for="emailLogin">Adresse email :</label>
       <input v-model="email" type="email" id="emailLogin" name="email" required />
@@ -12,13 +12,12 @@
       <p>Je n'ai pas de compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="$emit('set-signup')">S'inscrire</a></p>
     </div>
     <div class="inputfield">
-      <button @click="login()" type="submit" class="btn" :class="{'button--disabled' : !validatedFields}">
-        <!-- TODO : "button--disabled" = class bootstrap : trouver un schéma de remplacement -->
+      <button @click="login()" type="submit" class="btn" :disabled="!validatedFields">
         <span v-if="status === 'loading'">Connexion en cours...</span>
         <span v-else>Connexion</span>
       </button>
     </div>
-  </form>
+  </div>
 </template>
 
 <script>
@@ -26,18 +25,20 @@ import { mapState } from "vuex"
 
 export default {
   name: 'Login',
-  computed: {
-    ...mapState(["status"]),
-
-    validatedFields: function () {
-      if (this.display === 'login') {
-        return this.email !== "" && this.password !== "";
-      }
-      return false
+  data: function () {
+    return {
+      email: '',
+      password: '',
     }
   },
+  computed: {
+    validatedFields: function () {
+      return this.email !== "" && this.password !== "";
+    },
+    ...mapState(["status"])
+  },
   methods: {
-    login: function () {
+    login() {
       const self = this;
       this.$store.dispatch('login', {
         email: this.email,

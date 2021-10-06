@@ -1,6 +1,7 @@
 // Dépendances
 const express = require('express');
 const helmet = require("helmet");
+const bodyParser = require("body-parser");
 const path = require('path');
 
 // Routes
@@ -22,7 +23,7 @@ app.use((req, res, next) => {
 app.use(helmet());
 
 // Transforme le corps des requêtes en objet JSON
-app.use(express.json());
+app.use(bodyParser.json());
 
 // Accès au dossier gif
 app.use('/gif', express.static(path.join(__dirname, 'gif')));

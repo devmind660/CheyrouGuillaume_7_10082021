@@ -1,9 +1,4 @@
 const http = require('http');
-
-dotenv = require('dotenv').config();
-
-// Variables d\'environnement Dotenv
-
 const app = require('./app');
 
 const normalizePort = val => {
@@ -17,9 +12,12 @@ const normalizePort = val => {
     }
     return false;
 };
+
+// Écoute sur le port 3000 si aucun port n'est déclaré
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+// Recherche les différentes erreurs et les gère de manière appropriée. Elles sont ensuite enregistrées dans le serveur
 const errorHandler = error => {
     if (error.syscall !== 'listen') {
         throw error;
@@ -40,8 +38,10 @@ const errorHandler = error => {
     }
 };
 
+// Appels serveur : requêtes et réponses
 const server = http.createServer(app);
 
+// Gestion des évènements serveur
 server.on('error', errorHandler);
 server.on('listening', () => {
     const address = server.address();
@@ -49,4 +49,5 @@ server.on('listening', () => {
     console.log('Listening on ' + bind);
 });
 
+// Le serveur écoute le port définit plus haut
 server.listen(port);
