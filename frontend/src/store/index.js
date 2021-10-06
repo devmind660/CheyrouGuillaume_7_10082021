@@ -20,7 +20,7 @@ if (!user) {
     user = {
       userId: -1,
       token: '',
-    };q
+    };
   }
 }
 
