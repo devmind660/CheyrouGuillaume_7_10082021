@@ -1,5 +1,4 @@
 const connection = require('../models/connection')
-const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 dotenv = require('dotenv').config();
@@ -10,121 +9,84 @@ exports.signup = (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    console.log(req.body);
-
     bcrypt.hash(password, 10)
         .then(hash => {
             let sqlSignup = "INSERT INTO Users (username, email, password)"
-            + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
+                + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
             let values = [username, email, hash];
 
             // TODO : Empêcher le double email
 
-            connection.query(sqlSignup, values, function (error, result) {
-                if (error) {
-                    return res.status(400).json({ error: error })
+            connection.query(sqlSignup, values, function (err, result) {
+                if (err) {
+                    return res.status(400).json({ error: err })
                 }
                 res.status(201).json({ message: 'Utilisateur créé !' });
             });
         })
-        .catch((error) => {
-            res.status(500).json({ error: error })
+        .catch((err) => {
+            res.status(500).json({ error: err })
         });
 };
 
 // Connexion
-/*
-exports.login = (req, res, next) => {
-
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const sqlFindUser = "SELECT id, password FROM user WHERE email = ?";
-
-    connection.query(sqlFindUser, [email], function (err, result) {
-        if (err) {
-            return res.status(500).json(err.message);
-        }
-        if (result.length === 0) {
-            return res.status(401).json({ error: "Utilisateur non trouvé !" });
-        }
-        bcrypt.compare(password, result[0].password)
-            .then(valid => {
-                if (!valid && req.user && req.user ) {   //@todo verifier si le code isAdmin fonctionne?
-                    return res.status(401).json({ error: "Mot de passe incorrect !" });
-                }
-                // Si true, on renvoie un statut 200 et un objet JSON avec un userID + un token
-                res.status(200).json({
-                    userId: result[0].id,
-                    token: jwt.sign(
-                        { userId: result[0].id },
-                        process.env.TOKEN, // Clé d'encodage du token
-                        { expiresIn: '24h' },
-                        console.log("utilisateur connecté ")
-                    )
-                });
-            })
-            .catch(e => res.status(500).json(e));
-    });
-};
-*/
-
 exports.login = (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    console.log(req.body);
-
     const sqlEmail = "SELECT password FROM Users WHERE email = ?";
 
-    console.log(sqlEmail);
-
-    connection.query(sqlEmail, [email], function(error, result) {
-        if (error) {
-            console.log(error);
-            return res.status(401).json({ error: 'Utilisateur non trouvé !' })
+    connection.query(sqlEmail, [email], function(err, result) {
+        if (err) {
+            return res.status(500).json(err.message);
         }
-        // Si aucun utilisateur correspond à cet email
+        // Si aucun utilisateur ne correspond à cet email
         if (result.length === 0) {
             return res.status(401).json({ error: "Utilisateur non trouvé !" });
         }
-        console.log(result);
         const sqlPassword = result[0].password;
 
-        console.log(sqlPassword);
-
+        // TODO : Vérifier que le booléen isAdmin fonctionne
         bcrypt.compare(password, sqlPassword)
             .then(valid => {
-                if (!valid) {
-                    console.log(password, sqlPassword);
+                if (!valid /* TODO : && req.user && req.user */) {
                     return res.status(401).json({ error: 'Mot de passe incorrect !' });
                 }
                 res.status(200).json({
-                    userId: result[0].id,
-                    token: jwt.sign( // Mettre les userInfos complètes dans le token
-                        { userId: result[0].id },
+                    token: jwt.sign(
+                        {
+                            userId: result[0].id,
+                            username: result[0].username,
+                            email: result[0].email,
+                            creationDate: result[0].creation_date,
+                            adminRights: result[0].admin_rights
+                        },
                         'RANDOM_TOKEN_SECRET',
                         { expiresIn: '24h' },
                     )
                 });
             })
-            .catch((error) => {
-                res.status(500).json({ error: error })
+            .catch((err) => {
+                res.status(500).json({ error: err })
             });
     });
 };
 
 // Afficher les infos utilisateur
 exports.showProfile = (req, res) => {
-    const userId = req.body.id;
+    const userToken = req.headers.authorization.split(' ')[1];
 
     const sqlUser = "SELECT * FROM Users WHERE id = ?";
 
-    connection.query(sqlUser, [userId], function (error, result) {
-        if (error) {
-            return res.status(404).json({ error: error })
+    connection.query(sqlUser, [userToken], function (err, result) {
+        if (err) {
+            return res.status(500).json(err.message);
         }
-        res.status(200).json({ message: 'Affichage du profil…' });
+        // Si aucun utilisateur ne correspond à ce token
+        if (result.length === 0) {
+            return res.status(401).json({ message: "Utilisateur non-authentifié !" });
+        }
+        res.status(200).json(result);
     });
 };
 

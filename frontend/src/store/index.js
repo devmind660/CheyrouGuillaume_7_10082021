@@ -32,7 +32,8 @@ export default createStore({
       username: '',
       email: '',
       password: '',
-    }
+    },
+    postId: '1',
   },
   getters: {
   },
@@ -61,14 +62,14 @@ export default createStore({
       commit('setStatus', 'loading');
       return new Promise((resolve, reject) => {
         instance.post('api/auth/login', userInfos)
-            .then(function (response) {
+            .then(function (res) {
               commit('setStatus', '');
-              commit('logUser', response.data);
-              resolve(response);
+              commit('logUser', res.data);
+              resolve(res);
             })
-            .catch(function (error) {
+            .catch(function (err) {
               commit('setStatus', 'error_login');
-              reject(error);
+              reject(err);
             });
       });
     },
@@ -77,23 +78,37 @@ export default createStore({
       return new Promise((resolve, reject) => {
         commit;
         instance.post('api/auth/signup', userInfos)
-            .then(function (response) {
+            .then(function (res) {
               commit('setStatus', 'success_signup');
-              resolve(response);
+              resolve(res);
             })
-            .catch(function (error) {
+            .catch(function (err) {
               commit('setStatus', 'error_signup');
-              reject(error);
+              reject(err);
             });
       });
     },
-    getUserInfos: ({commit}) => {
-      instance.post('api/auth/infos')
-          .then(function (response) {
-            commit('userInfos', response.data.result[0]);
+    showProfile: ({commit}) => {
+      instance.get('api/auth/infos')
+          .then(function (res) {
+            commit('userInfos', res.data.result[0]);
           })
-          .catch(function () {
-          });
+          .catch(err => console.log(err.message))
+    },
+    publish: ({commit}, userInfos) => {
+      commit('setStatus', 'loading');
+      return new Promise((resolve, reject) => {
+        commit;
+        instance.post('api/posts/', userInfos)
+            .then(function (res) {
+              commit('setStatus', 'success_publish');
+              resolve(res);
+            })
+            .catch(function (err) {
+              commit('setStatus', 'error_publish');
+              reject(err);
+            });
+      });
     }
   },
   modules: {

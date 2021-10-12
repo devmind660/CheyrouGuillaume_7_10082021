@@ -7,49 +7,45 @@
     <section class="wrapper wrapper__lg">
       <h2>Fil du forum – {{ feed.length }} post<span v-if="feed.length > 1">s</span></h2>
       <ul v-if="feed.length">
-        <li v-for="post in feed" :key="post.id">
+        <li v-for="(post, index) in feed" :key="index">
           <article>
             <router-link :to="{ name: 'Post', params: { id: post.id } }">
               <h3>{{ post.gif_desc }}</h3>
-              <small>{{ 'posté par #' + post.author_id + ' le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small>
             </router-link>
+            <small>{{ 'posté par ' + post.username + ', le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small>
           </article>
         </li>
       </ul>
-      <p v-else>Chargement du fil…</p>
+      <p v-else>Une erreur s'est produite</p>
     </section>
   </div>
 </template>
 
 <script>
 import Banner from "@/components/Banner";
+import axios from 'axios';
 
 export default {
   name: 'Home',
   components: { Banner },
   data() {
     return {
-      feed: [],
+      feed: []
     }
   },
   mounted() {
-    console.log(this.$store.state.user);
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
-      return ;
+      return;
     }
-    fetch('http://localhost:3000/api/posts/')
-        .then(res => res.json())
-        .then(data => {
-          this.feed = data
-          console.log(data);
-        })
-        .catch(error => console.log(error.message))
-  },
+    axios.get('http://localhost:3000/api/posts/')
+      .then(res => this.feed = res.data)
+      .catch(err => console.log(err.message))
+  }
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "src/assets/styles/utils";
 
 div#home__banner {
@@ -72,9 +68,6 @@ div#home__banner {
   }
 }
 
-.wrapper__lg {
-  max-width: 800px;
-}
 li {
   margin-bottom: 15px;
   &:last-child {

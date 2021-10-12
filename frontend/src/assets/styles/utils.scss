@@ -1,6 +1,12 @@
 $primary: #2A52BE;
 $secondary: #318CE7;
 
+$info: #0d6efd;
+$success: #198754;
+$danger: #dc3545;
+
+$hover-gradient : 10;
+
 @mixin white-bloc {
   background-color: white;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.125);

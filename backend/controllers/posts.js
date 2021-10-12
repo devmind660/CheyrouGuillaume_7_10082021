@@ -1,20 +1,22 @@
 const connection = require('../models/connection')
-const mysql = require('mysql');
 const fs = require('fs'); // style system, gestion Node des fichiers
 
 // Poster un GIF
 exports.createPost = (req, res) => {
-    const userId = res.locals.userId;
-    const gifTitle = req.body.gif_desc;
-    const gifUrl = `${req.protocol}://${req.get('host')}/gif/${req.file.filename}`;
+    // const userId = res.locals.userId;
+    // const gifTitle = req.body.gif_desc;
+    // const gifUrl = `${req.protocol}://${req.get('host')}/gif/${req.file.filename}`;
+    const userId = 9;
+    const gifTitle = "Super GIF";
+    const gifUrl = "hello.gif";
 
-    let sqlCreatePost = "INSERT INTO Gif_posts (id, author_id, gif_desc, publication_date, gif_url)"
-        + "VALUES (NULL, ?, ?, CURRENT_TIMESTAMP(), ?)";
+    let sqlCreatePost = "INSERT INTO Gif_posts (author_id, gif_desc, gif_url)"
+        + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
     let values = [userId, gifTitle, gifUrl];
 
-    connection.query(sqlCreatePost, values, function (error, result) {
-        if (error) {
-            return res.status(400).json({ error: error })
+    connection.query(sqlCreatePost, values, function (err, result) {
+        if (err) {
+            return res.status(400).json({ error: err })
         }
         res.status(201).json({ message: 'Gif publié !' })
     });
@@ -22,15 +24,16 @@ exports.createPost = (req, res) => {
 
 // Afficher un post
 exports.showPost = (req, res) => {
-    const postId = req.body.id;
+    // const postId = req.body.id;
+    const postId = 1;
 
-    const sqlPost = "SELECT * FROM Gif_posts WHERE id = ?";
+    const sqlPost = "SELECT * FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id WHERE p.id = ?";
 
-    connection.query(sqlPost, [postId], function (error, result) {
-        if (error) {
-            return res.status(404).json({ error: error })
+    connection.query(sqlPost, [postId], function (err, result) {
+        if (err) {
+            return res.status(404).json({ error: err })
         }
-        res.status(200).json({ message: 'Affichage du post…' });
+        res.status(200).json(result[0]);
     });
 };
 
@@ -89,27 +92,27 @@ exports.deletePost = (req, res) => {
                             message: 'Sauce supprimée !'
                         })
                     })
-                    .catch((error) => {
+                    .catch((err) => {
                         res.status(400).json({
-                            error: error
+                            error: err
                         })
                     });
             });
         })
-        .catch((error) => {
+        .catch((err) => {
             res.status(500).json({
-                error: error
+                error: err
             })
         });
 }; */
 
 // Afficher le fil
 exports.showFeed = (req, res) => {
-    const sqlFeed = "SELECT * FROM Gif_posts";
+    const sqlFeed = "SELECT * FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id";
 
-    connection.query(sqlFeed, function (error, result) {
-        if (error) {
-            return res.status(400).json({ error: error })
+    connection.query(sqlFeed, function (err, result) {
+        if (err) {
+            return res.status(400).json({ error: err })
         }
         res.status(200).json(result);
     });
