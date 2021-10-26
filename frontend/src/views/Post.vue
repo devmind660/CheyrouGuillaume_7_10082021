@@ -1,88 +1,122 @@
 <template>
   <div class="post">
-    <Banner title="Détails du post" />
-    <section class="wrapper wrapper__lg">
-      <h2>Post #{{ post.id }}</h2>
-      <article v-if="post.id">
-        <h3>{{ post.gif_desc }}</h3>
-        <small>{{ 'posté par ' + post.username + ', le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small><br>
-        <div class="inputfield inputfield__option">
-          <p v-if="!this.delete">Gérer le post&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="this.delete = true">Supprimer</a></p>
-          <p v-if="this.delete">Supprimer le post&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="deletePost()">Confirmer</a>&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="this.delete = false">Annuler</a></p>
+    <MainTitle v-if="post.gif_url" title="Détails du post" />
+    <section v-if="post.gif_url" class="wrapper wrapper__lg">
+      <h2>Post・{{ comments.length }} <i class="far fa-comment-dots"></i></h2>
+      <article>
+        <button @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
+        <div class="text-field">
+          <h3>{{ post.username }}</h3>
+          <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small><br>
         </div>
-        <div class="inputfield">
-          <button @click="leaveComment()" type="submit" class="btn btn__info" :disabled="!validatedFields"><i class="fas fa-paper-plane"></i></button>
-          <label for="comment">Commentaire :</label>
-          <textarea v-model="comment" id="comment" name="comment" placeholder="Laisser un commentaire…" maxlength="255" required></textarea>
-        </div>
-        <div class="inputfield inputfield__option">
-          <p>{{ comment.length }} / 255 caractères</p>
-        </div>
+        <span>{{ post.gif_url }}</span>
+        <p class="text-content">{{ post.gif_desc }}</p>
       </article>
-      <p v-else>Une erreur s'est produite</p>
     </section>
+    <section v-if="post.gif_url" class="wrapper wrapper__lg">
+      <div class="text-field text-field__comment">
+        <button @click="createComment()" class="icon" type="submit" :disabled="!comment" title="Publier le commentaire"><i class="fas fa-paper-plane fa-lg"></i></button>
+        <label for="comment">Commentaire :</label>
+        <textarea v-model="comment" id="comment" name="comment" placeholder="Laisser un commentaire…" maxlength="255" required></textarea>
+      </div>
+      <div class="text-field text-field__option">
+        <p>{{ comment.length }} / 255 caractères</p>
+      </div>
+      <ul v-if="comments.length">
+        <li v-for="comment in comments" :key="comment.id">
+          <article>
+            <button @click="deleteComment(comment.id)" class="icon" title="Supprimer le commentaire"><i class="fas fa-trash-alt fa-lg"></i></button>
+            <div class="text-field">
+              <h3>{{ comment.username }}</h3>
+              <small>{{ 'Le ' + comment.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + comment.publication_date.slice(11, 16) }}</small>
+            </div>
+            <p class="text-content">{{ comment.gif_comment }}</p>
+          </article>
+        </li>
+      </ul>
+      <h3 v-else>Aucun commentaire</h3>
+    </section>
+    <ErrorMessage v-else error="404" message="Le post demandé n'a pas été trouvé ou n'existe pas"></ErrorMessage>
   </div>
 </template>
 
 <script>
-import Banner from "@/components/Banner";
+import MainTitle from "@/components/MainTitle";
+import ErrorMessage from "@/components/ErrorMessage";
 import axios from 'axios';
 import {mapState} from "vuex";
 
 export default {
   name: 'Post',
-  components: { Banner },
+  components: { MainTitle, ErrorMessage },
+  props: ['id'], // On récupère l'id dans l'url en ayant autorisé les props dans le routeur
   data() {
     return {
-      delete: false,
       post: {},
       comment: '',
       comments: []
     }
   },
   computed: {
-    validatedFields: function () {
-      return this.comment !== "";
-    },
     ...mapState(["status"])
   },
   mounted() {
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
-      return;
     }
-    axios.get('http://localhost:3000/api/posts/:' + this.id)
+    this.getComments();
+    axios.get('http://localhost:3000/api/posts/:', {
+      params: { id: this.id }
+    })
         .then(res => this.post = res.data)
-        .catch(err => console.log(err.message))
   },
   methods: {
-    deletePost() {
-      this.$router.push('/feed');
+    getComments() {
+      axios.get('http://localhost:3000/api/comments/:', {
+        params: { id: this.id }
+      })
+          .then(res => this.comments = res.data)
     },
-    leaveComment() {
-      axios.post('http://localhost:3000/api/posts/')
-          .then (res => {
-            this.feed = res.data
-            self.$router.push('/profile');
+    deletePost(id) {
+      axios.delete('http://localhost:3000/api/posts/' + id)
+          .then(() => this.$router.push('/feed'))
+    },
+    deleteComment(id) {
+      axios.delete('http://localhost:3000/api/comments/' + id)
+          .then(() => this.getComments())
+    },
+    createComment() {
+      axios.post('http://localhost:3000/api/comments/', {
+        id: this.id,
+        comment: this.comment
+      })
+          .then(() => {
+            this.getComments();
+            this.comment = '';
           })
-          .catch(err => console.log(err.message))
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.inputfield {
+@import "src/assets/styles/utils";
+
+.text-field__comment {
   position: relative;
 
-  button {
+  button.icon {
+    color: $info;
     position: absolute;
     right: 10px;
     bottom: 10px;
+    &:hover {
+      color: lighten($info, $hover-gradient);
+    }
   }
 }
-small {
-  display: block;
-  text-align: right;
+
+li:first-child {
+  margin-top: 15px;
 }
 </style>

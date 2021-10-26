@@ -8,8 +8,6 @@ $danger: #dc3545;
 $hover-gradient : 10;
 
 @mixin white-bloc {
-  background-color: white;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.125);
-  margin: 50px auto;
-  padding: 30px;
+  border: 1px solid $primary;
+  box-shadow: rgba(0, 0, 0, 0.16) 0 1px 4px;
 }

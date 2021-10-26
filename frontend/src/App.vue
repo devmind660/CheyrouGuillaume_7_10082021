@@ -2,12 +2,12 @@
   <header>
     <img class="desktop" alt="Groupomania logo" src="./assets/logos/icon-left-font-monochrome-black.svg">
     <img class="mobile" alt="Groupomania logo" src="./assets/logos/icon-monochrome-black.png">
-    <div id="nav">
+    <nav>
       <router-link to="/feed" v-if="this.$store.state.user.userId !== -1"><i class="fas fa-comments"></i><span>Forum</span></router-link>
       <router-link to="/publish" v-if="this.$store.state.user.userId !== -1"><i class="fas fa-pen"></i><span>Publier</span></router-link>
       <router-link to="/" v-if="this.$store.state.user.userId === -1"><i class="fas fa-user-circle"></i><span>Compte</span></router-link>
       <router-link to="/profile" v-if="this.$store.state.user.userId !== -1"><i class="fas fa-user-circle"></i><span>Profil</span></router-link>
-    </div>
+    </nav>
   </header>
   <router-view />
 </template>
@@ -15,134 +15,264 @@
 <style lang="scss">
 @import "assets/styles/utils";
 
-  * {
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    background-color: #2A52BE;
-  }
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    box-sizing: border-box;
+// ---------- GENERAL | PRESETS ----------
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: #2A52BE;
+}
 
-    li {
-      list-style-type: none;
-    }
-    .wrapper__sm {
-      max-width: 400px;
-    }
-    .wrapper__lg {
-      max-width: 800px;
-    }
-    textarea {
-      resize: vertical;
-      @media all and (min-width: 600px) {
-        min-height: 50px;
-      }
-      @media all and (max-width: 599px) {
-        min-height: 80px;
-      }
-    }
+// ---------- GENERAL | APP ----------
+#app {
+  color: $primary;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
-    header {
-      background-color: white;
-      line-height: 0;
-      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.125);
+  // ---------- GENERAL | HEADER MENU ----------
+  header {
+    background-color: white;
+    line-height: 0;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.125);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+
+    img {
+      height: 34px;
+      &.mobile {
+        @media all and (min-width: 421px) {
+          display: none;
+        }
+      }
+      &.desktop {
+        @media all and (max-width: 420px) {
+          display: none;
+        }
+      }
+    }
+  }
+  nav {
+    display: flex;
+
+    a {
+      color: $primary;
+      font-weight: bold;
+      text-decoration: none;
+      border: 2px solid $primary;
+      border-radius: 20px;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      padding: 20px;
+      margin-left: 15px;
+      height: 34px;
+      @media all and (min-width: 600px) {
+        width: 84px;
+      }
+      @media all and (max-width: 599px){
+        width: 34px;
+      }
+      &:first-child {
+        margin-left: 0;
+      }
+      &.router-link-exact-active {
+        background-color: $primary;
+        color: white;
+      }
 
-      img {
-        height: 34px;
-        &.mobile {
-          @media all and (min-width: 421px) {
-            display: none;
-          }
-        }
-        &.desktop {
-          @media all and (max-width: 420px) {
-            display: none;
-          }
+      i {
+        @media all and (min-width: 600px){
+          display: none;
         }
       }
-      #nav {
-        display: flex;
-
-        a {
-          color: #2A52BE;
-          font-weight: bold;
-          text-decoration: none;
-          border: 2px solid $primary;
-          border-radius: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-left: 15px;
-          height: 30px;
-          @media all and (min-width: 600px) {
-            width: 80px;
-          }
-          @media all and (max-width: 599px){
-            width: 30px;
-          }
-          &:first-child {
-            margin-left: 0;
-          }
-          &.router-link-exact-active {
-            background-color: $primary;
-            color: white;
-          }
-
-          i {
-            @media all and (min-width: 600px){
-              display: none;
-            }
-          }
-          span {
-            @media all and (max-width: 599px){
-              display: none;
-            }
-          }
+      span {
+        @media all and (max-width: 599px){
+          display: none;
         }
       }
     }
-    .btn {
-      color: white;
-      border: 0;
-      border-radius: 3px;
-      cursor: pointer;
-      outline: none;
-      padding: 8px 10px;
-      &__lg {
+  }
+
+  // ---------- GENERAL | MAIN STRUCTURE ----------
+  .wrapper__sm {
+    max-width: 400px;
+  }
+  .wrapper__lg {
+    max-width: 800px;
+  }
+  .wrapper {
+    background-color: white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.125);
+    margin: 50px auto;
+    padding: 30px;
+    @media (max-width: 420px) {
+      padding: 15px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 0;
+    }
+
+    div.form, article, ul {
+      width: 100%;
+    }
+  }
+  li {
+    list-style-type: none;
+    margin-bottom: 15px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  article {
+    background-color: white;
+    border: 1px solid $primary;
+    border-radius: 3px;
+    position: relative;
+
+    span {
+      text-align: center;
+      display: block;
+    }
+    button.icon {
+      color: $danger;
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      &:hover {
+        color: lighten($danger, $hover-gradient);
+      }
+    }
+    .text-field {
+      margin-bottom: 0;
+
+      h3 {
+        font-size: 1.2rem;
+        padding: 8px 10px;
+        @media (max-width: 420px) {
+          padding-bottom: 0;
+        }
+      }
+      small {
+        padding: 5px 10px;
         width: 100%;
-      }
-      &__info {
-        background: $info;
-        &:hover {
-          background-color: lighten($info, $hover-gradient);
+        @media (min-width: 421px) {
+          text-align: right;
         }
       }
-      &__success {
-        background-color: $success;
-        &:hover {
-          background-color: lighten($success, $hover-gradient);
-        }
+    }
+  }
+
+  // ---------- GENERAL | COMPONENTS ----------
+  .text-field {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    @media (max-width: 420px) {
+      flex-wrap: wrap;
+    }
+    &__option p {
+      margin-left: auto;
+
+      a:hover {
+        text-decoration: underline;
+        cursor: pointer;
       }
-      &__danger {
-        background-color: $danger;
-        &:hover {
-          background-color: lighten($danger, $hover-gradient);
+    }
+
+    label {
+      min-width: 120px;
+      @media (max-width: 420px) {
+        margin-bottom: 5px;
+      }
+    }
+
+    input, textarea {
+      font-size: 1rem;
+      outline: none;
+      border-radius: 3px;
+      padding: 8px 10px;
+      width: 100%;
+      transition: all 0.3s ease;
+      &[required] {
+        border: 1px solid $primary;
+        &:focus {
+          border: 1px solid silver;
         }
       }
       &[disabled] {
-        background-color: lightgray;
-        cursor: default;
+        background-color: ghostwhite;
+        border: 1px solid lightgray;
       }
     }
   }
+  textarea {
+    resize: vertical;
+    @media all and (min-width: 600px) {
+      min-height: 50px;
+    }
+    @media all and (max-width: 599px) {
+      min-height: 80px;
+    }
+  }
+  .text-content {
+    margin: 8px 10px;
+  }
+  button {
+    border: none;
+    cursor: pointer;
+  }
+  .btn {
+    color: white;
+    border-radius: 3px;
+    padding: 8px 10px;
+    &__lg {
+      width: 100%;
+    }
+    &__info {
+      background: $info;
+      &:hover {
+        background-color: lighten($info, $hover-gradient);
+      }
+    }
+    &__success {
+      background-color: $success;
+      &:hover {
+        background-color: lighten($success, $hover-gradient);
+      }
+    }
+    &__danger {
+      background-color: $danger;
+      &:hover {
+        background-color: lighten($danger, $hover-gradient);
+      }
+    }
+    &[disabled] {
+      background-color: lightgray;
+      cursor: default;
+    }
+  }
+  .icon {
+    background-color: transparent;
+    &[disabled] {
+      color: lightgray;
+      cursor: not-allowed;
+    }
+  }
+}
 </style>

@@ -32,8 +32,7 @@ export default createStore({
       username: '',
       email: '',
       password: '',
-    },
-    postId: '1',
+    }
   },
   getters: {
   },
@@ -89,27 +88,12 @@ export default createStore({
       });
     },
     showProfile: ({commit}) => {
-      instance.get('api/auth/infos')
+      instance.get('api/auth/showProfile')
           .then(function (res) {
             commit('userInfos', res.data.result[0]);
           })
           .catch(err => console.log(err.message))
     },
-    publish: ({commit}, userInfos) => {
-      commit('setStatus', 'loading');
-      return new Promise((resolve, reject) => {
-        commit;
-        instance.post('api/posts/', userInfos)
-            .then(function (res) {
-              commit('setStatus', 'success_publish');
-              resolve(res);
-            })
-            .catch(function (err) {
-              commit('setStatus', 'error_publish');
-              reject(err);
-            });
-      });
-    }
   },
   modules: {
   }

@@ -10,7 +10,6 @@ const postCtrl = require('../controllers/posts');
 router.get('/', postCtrl.showFeed);
 router.post('/', multer, postCtrl.createPost);
 router.get('/:id', postCtrl.showPost);
-// TODO : router.delete('/:id', auth, postCtrl.deletePost);
-// TODO : router.post('/:id/comment', auth, postCtrl.commentPost);
+router.delete('/:id', postCtrl.deletePost);
 
 module.exports = router;

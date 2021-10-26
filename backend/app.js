@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const path = require('path');
 
 // Routes
+const commentsRoutes = require('./routes/comments');
 const postsRoutes = require('./routes/posts');
 const userRoutes = require('./routes/user');
 
@@ -29,6 +30,7 @@ app.use(bodyParser.json());
 app.use('/gif', express.static(path.join(__dirname, 'gif')));
 
 // Routes
+app.use('/api/comments', commentsRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/auth', userRoutes);
 

@@ -18,14 +18,20 @@ const routes = [
     component: () => import('../views/Publish.vue')
   },
   {
-    path: '/post',
+    path: '/post/:id',
     name: 'Post',
-    component: () => import('../views/Post.vue')
+    component: () => import('../views/Post.vue'),
+    props: true
   },
   {
     path: '/profile',
     name: 'Profile',
     component: () => import('../views/Profile.vue')
+  },
+  {
+    path: '/:catchAll(.*)',
+    name: 'NotFound',
+    component: () => import('../views/Error.vue')
   }
 ]
 

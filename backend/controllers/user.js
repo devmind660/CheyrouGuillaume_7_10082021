@@ -5,17 +5,17 @@ dotenv = require('dotenv').config();
 
 // Inscription
 exports.signup = (req, res) => {
-    let username = req.body.username;
-    let email = req.body.email;
-    let password = req.body.password;
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
 
     bcrypt.hash(password, 10)
         .then(hash => {
-            let sqlSignup = "INSERT INTO Users (username, email, password)"
+            const sqlSignup = "INSERT INTO Users (username, email, password)"
                 + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
-            let values = [username, email, hash];
+            const values = [username, email, hash];
 
-            // TODO : Empêcher le double email
+            // TODO : Empêcher le double email ? CAR DEJA impossible d'avoir 2 mails identiques sur mySQL
 
             connection.query(sqlSignup, values, function (err, result) {
                 if (err) {
@@ -31,10 +31,10 @@ exports.signup = (req, res) => {
 
 // Connexion
 exports.login = (req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
+    const email = req.body.email;
+    const password = req.body.password;
 
-    const sqlEmail = "SELECT password FROM Users WHERE email = ?";
+    const sqlEmail = "SELECT u.password FROM Users u WHERE u.email = ?";
 
     connection.query(sqlEmail, [email], function(err, result) {
         if (err) {
@@ -76,7 +76,8 @@ exports.login = (req, res) => {
 exports.showProfile = (req, res) => {
     const userToken = req.headers.authorization.split(' ')[1];
 
-    const sqlUser = "SELECT * FROM Users WHERE id = ?";
+    console.error(userToken)
+    const sqlUser = "SELECT u.id, u.username, u.email, u.creation_date, u.admin_rights FROM Users u WHERE u.username = ?";
 
     connection.query(sqlUser, [userToken], function (err, result) {
         if (err) {
@@ -86,16 +87,20 @@ exports.showProfile = (req, res) => {
         if (result.length === 0) {
             return res.status(401).json({ message: "Utilisateur non-authentifié !" });
         }
-        res.status(200).json(result);
+        res.status(200).json(result[0]);
     });
 };
 
-/* // Modification du profil
-exports.modifyAccount = (req, res) => {
+// Suppression du compte
+exports.deleteUser = (req, res) => {
+    const userId = req.params.id;
 
-}; */
+    const sqlDeleteUser = "DELETE FROM Users WHERE id = ?"
 
-/* // Suppression du compte
-exports.deleteAccount = (req, res) => {
-
-}; */
+    connection.query(sqlDeleteUser, [userId], function (err, result) {
+        if (err) {
+            return res.status(400).json({ error: err })
+        }
+        res.status(201).json({ message: 'Utilisateur supprimé !' })
+    });
+};

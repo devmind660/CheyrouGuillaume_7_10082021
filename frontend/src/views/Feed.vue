@@ -2,32 +2,36 @@
   <div class="home">
     <div id="home__banner">
       <img src="../assets/logos/icon-left-font-monochrome-white.svg" alt="logo groupomania">
-      <Banner title="Forum des salariés" />
     </div>
+    <MainTitle title="Forum des salariés"></MainTitle>
     <section class="wrapper wrapper__lg">
-      <h2>Fil du forum – {{ feed.length }} post<span v-if="feed.length > 1">s</span></h2>
-      <ul v-if="feed.length">
-        <li v-for="(post, index) in feed" :key="index">
+      <h2>Forum・{{ feed.length }} <i class="far fa-comment-dots"></i></h2>
+      <ul>
+        <li v-for="post in feed" :key="post.id">
           <article>
+            <button @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
+            <div class="text-field">
+              <h3>{{ post.username }}</h3>
+              <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small>
+            </div>
             <router-link :to="{ name: 'Post', params: { id: post.id } }">
-              <h3>{{ post.gif_desc }}</h3>
+              <span>{{ post.gif_url }}</span>
             </router-link>
-            <small>{{ 'posté par ' + post.username + ', le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small>
+            <p class="text-content">{{ post.gif_desc }}</p>
           </article>
         </li>
       </ul>
-      <p v-else>Une erreur s'est produite</p>
     </section>
   </div>
 </template>
 
 <script>
-import Banner from "@/components/Banner";
+import MainTitle from "@/components/MainTitle";
 import axios from 'axios';
 
 export default {
   name: 'Home',
-  components: { Banner },
+  components: { MainTitle },
   data() {
     return {
       feed: []
@@ -36,11 +40,18 @@ export default {
   mounted() {
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
-      return;
     }
-    axios.get('http://localhost:3000/api/posts/')
-      .then(res => this.feed = res.data)
-      .catch(err => console.log(err.message))
+    this.getFeed();
+  },
+  methods: {
+    getFeed() {
+      axios.get('http://localhost:3000/api/posts/')
+          .then(res => this.feed = res.data)
+    },
+    deletePost(id) {
+      axios.delete('http://localhost:3000/api/posts/' + id)
+          .then(() => this.getFeed())
+    }
   }
 }
 </script>
@@ -49,52 +60,20 @@ export default {
 @import "src/assets/styles/utils";
 
 div#home__banner {
-  background-image: url("../assets/images/priscilla-du-preez-XkKCui44iM0-unsplash.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../assets/images/priscilla-du-preez-XkKCui44iM0-unsplash.jpg");
   background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  height: 50vw;
+  max-height: 100vh;
 
   img {
     width: 50%;
-    min-width: 350px;
+    min-width: 250px;
     max-width: 500px;
-    @media all and (max-width: 500px) {
-      display: none;
-    }
-  }
-}
-
-li {
-  margin-bottom: 15px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-article {
-  border: 1px solid $primary;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  @media (max-width: 600px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  h3 {
-    color: $primary;
-    font-size: 1.2rem;
-    padding: 8px 10px;
-    @media (max-width: 600px) {
-      padding-bottom: 0;
-    }
-  }
-  small {
-    padding: 8px 10px;
   }
 }
 </style>

@@ -1,70 +1,59 @@
 <template>
   <div class="profile">
+    <MainTitle title="Mes informations"></MainTitle>
     <section class="wrapper wrapper__sm">
-      <h2>Mon profil</h2>
+      <h2>Profil</h2>
       <div class="form">
-        <div v-if="display !== 'modify'" class="inputfield">
-          <p>Création du compte :</p>
+        <div class="text-field">
+          <p>Nom d'utilisateur : {{ userProfile.username }}</p>
         </div>
-        <div v-if="display !== 'modify'" class="inputfield">
-          <label for="username">Utilisateur :</label>
-          <input type="text" id="username" name="username" disabled/>
+        <div class="text-field">
+          <p>Adresse email : {{ userProfile.email }}</p>
         </div>
-        <div v-if="display !== 'modify'" class="inputfield">
-          <label for="email">Adresse email :</label>
-          <input type="email" id="email" name="email" disabled />
+        <div class="text-field">
+          <p>Date de création : {{ userProfile.creation_date }}</p>
         </div>
-        <div v-if="display === 'modify'" class="inputfield">
-          <label for="password">Mot de passe :</label>
-          <input v-model="password" type="password" id="password" name="password" maxlength="255" :required="display === 'modify'" :disabled="display !== 'modify'" />
+        <div class="text-field text-field__option">
+          <p v-if="!deleteConfirm">Gérer mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setDelete">Supprimer</a></p>
+          <p v-if="deleteConfirm">Supprimer mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setRead">Annuler</a></p>
         </div>
-        <div v-if="display === 'modify'" class="inputfield">
-          <label for="confirm">Confirmation :</label>
-          <input v-model="confirm" type="password" id="confirm" maxlength="255" :required="display === 'modify'" :disabled="display !== 'modify'" />
-        </div>
-        <div class="inputfield inputfield__option">
-          <p v-if="display === 'read'">Gérer mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setModify">Modifier</a>&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setDelete">Supprimer</a></p>
-          <p v-if="display === 'modify'">Modifier mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setRead">Annuler</a></p>
-          <p v-if="display === 'delete'">Supprimer mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setRead">Annuler</a></p>
-        </div>
-        <div class="inputfield">
-          <button v-if="display === 'read'" @click="logout()" class="btn btn__lg btn__danger">Déconnexion</button>
-          <button v-if="display === 'modify'" @click="setRead()" type="submit" class="btn btn__lg btn__success" :disabled="!validatedFields">Enregistrer</button>
-          <button v-if="display === 'delete'" class="btn btn__lg btn__danger">Supprimer</button>
-        </div>
+        <button v-if="!deleteConfirm" @click="logout()" class="btn btn__lg btn__danger">Déconnexion</button>
+        <button v-if="deleteConfirm" @click="deleteUser(user.id)" class="btn btn__lg btn__danger">Supprimer</button>
       </div>
     </section>
   </div>
 </template>
 
 <script>
+import MainTitle from "@/components/MainTitle";
 import { mapState } from "vuex"
+import axios from "axios";
 
 export default {
   name: 'Profile',
+  components: { MainTitle },
   data() {
     return {
-      display: 'read',
-      username: '',
-      email: '',
-      password: '',
-      confirm: ''
+      deleteConfirm: false,
+      userProfile: {}
     }
   },
   computed: {
-    validatedFields: function () {
-      return this.password !== "" && this.password === this.confirm;
-    },
     ...mapState({
       user: 'userInfos',
     })
   },
   mounted() {
-    console.log(this.$store.state.user);
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
       return ;
     }
+/*
+    axios.get('http://localhost:3000/api/user/:', {
+      params: { user: userProfile.username }
+    })
+        .then(res => this.user = res.data)
+*/
     this.$store.dispatch('showProfile');
   },
   methods: {
@@ -72,14 +61,15 @@ export default {
       this.$store.commit('logout');
       this.$router.push('/');
     },
-    setRead() {
-      this.display = 'read'
+    deleteUser(id) {
+      axios.delete('http://localhost:3000/api/user/:' + id)
+          .then(() => this.$router.push('/'))
     },
-    setModify() {
-      this.display = 'modify'
+    setRead() {
+      this.deleteConfirm = false
     },
     setDelete() {
-      this.display = 'delete'
+      this.deleteConfirm = true
     }
   }
 }
