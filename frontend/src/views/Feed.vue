@@ -9,13 +9,14 @@
       <ul>
         <li v-for="post in feed" :key="post.id">
           <article>
-            <button @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
+            <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
             <div class="text-field">
-              <h3>{{ post.username }}</h3>
+              <h3 v-if="post.username">{{ post.username }}</h3>
+              <h3 v-else class="anonyme">Anonyme</h3>
               <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small>
             </div>
             <router-link :to="{ name: 'Post', params: { id: post.id } }">
-              <span>{{ post.gif_url }}</span>
+              <img :src="post.gif_url" />
             </router-link>
             <p class="text-content">{{ post.gif_desc }}</p>
           </article>

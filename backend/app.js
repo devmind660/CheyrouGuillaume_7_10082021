@@ -32,6 +32,6 @@ app.use('/gif', express.static(path.join(__dirname, 'gif')));
 // Routes
 app.use('/api/comments', commentsRoutes);
 app.use('/api/posts', postsRoutes);
-app.use('/api/auth', userRoutes);
+app.use('/api/user', userRoutes);
 
 module.exports = app;

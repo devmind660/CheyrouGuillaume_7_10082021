@@ -49,19 +49,19 @@ export default {
   data() {
     return {
       display: 'login',
-      username: '',
-      email: '',
-      password: '',
-      confirm: ''
+      username: null,
+      email: null,
+      password: null,
+      confirm: null
     }
   },
   components: { MainTitle },
   computed: {
     validatedFields: function () {
       if (this.display === 'signup') {
-        return this.username !== "" && this.email !== "" && this.password !== "" && this.password === this.confirm;
+        return this.username && this.email && this.password && this.password && this.confirm;
       } else {
-        return this.email !== "" && this.password !== "";
+        return this.email && this.password;
       }
     },
     ...mapState(["status"])
@@ -78,7 +78,7 @@ export default {
     setSignup() {
       this.display = 'signup'
     },
-    signup: function () {
+    signup () {
       const self = this;
       this.$store.dispatch('signup', {
         username: this.username,

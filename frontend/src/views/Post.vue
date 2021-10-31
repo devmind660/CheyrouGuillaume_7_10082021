@@ -4,12 +4,13 @@
     <section v-if="post.gif_url" class="wrapper wrapper__lg">
       <h2>Post・{{ comments.length }} <i class="far fa-comment-dots"></i></h2>
       <article>
-        <button @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
+        <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
         <div class="text-field">
-          <h3>{{ post.username }}</h3>
+          <h3 v-if="post.username">{{ post.username }}</h3>
+          <h3 v-else class="anonyme">Anonyme</h3>
           <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small><br>
         </div>
-        <span>{{ post.gif_url }}</span>
+        <img :src="post.gif_url" />
         <p class="text-content">{{ post.gif_desc }}</p>
       </article>
     </section>
@@ -25,9 +26,10 @@
       <ul v-if="comments.length">
         <li v-for="comment in comments" :key="comment.id">
           <article>
-            <button @click="deleteComment(comment.id)" class="icon" title="Supprimer le commentaire"><i class="fas fa-trash-alt fa-lg"></i></button>
+            <button v-if="comment.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deleteComment(comment.id)" class="icon" title="Supprimer le commentaire"><i class="fas fa-trash-alt fa-lg"></i></button>
             <div class="text-field">
-              <h3>{{ comment.username }}</h3>
+              <h3 v-if="comment.username">{{ comment.username }}</h3>
+              <h3 v-else class="anonyme">Anonyme</h3>
               <small>{{ 'Le ' + comment.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + comment.publication_date.slice(11, 16) }}</small>
             </div>
             <p class="text-content">{{ comment.gif_comment }}</p>
@@ -53,7 +55,7 @@ export default {
   data() {
     return {
       post: {},
-      comment: '',
+      comment: null,
       comments: []
     }
   },
@@ -87,6 +89,7 @@ export default {
     },
     createComment() {
       axios.post('http://localhost:3000/api/comments/', {
+        user: this.$store.state.user.userId,
         id: this.id,
         comment: this.comment
       })

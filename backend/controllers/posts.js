@@ -3,11 +3,10 @@ const fs = require('fs'); // style system, gestion Node des fichiers
 
 // Poster un GIF
 exports.createPost = (req, res) => {
-    // const userId = res.locals.userId;
-    const userId = 2;
+    const userId = req.body.user;
     const gifDesc = req.body.description;
-    // const gifUrl = `${req.protocol}://${req.get('host')}/gif/${req.file.filename}`;
-    const gifUrl = 'test';
+    const gifUrl = req.body.url;
+    // `${req.protocol}://${req.get('host')}/gif/${req.file.filename}`
 
     const sqlCreatePost = "INSERT INTO Gif_posts (author_id, gif_desc, gif_url)"
         + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
@@ -25,7 +24,7 @@ exports.createPost = (req, res) => {
 exports.showPost = (req, res) => {
     const postId = req.query.id;
 
-    const sqlPost = "SELECT p.id, p.gif_desc, p.publication_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id WHERE p.id = ?";
+    const sqlPost = "SELECT p.id, p.author_id, p.gif_desc, p.publication_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id WHERE p.id = ?";
 
     connection.query(sqlPost, [postId], function (err, result) {
         if (err) { // err 500
@@ -58,7 +57,7 @@ exports.deletePost = (req, res) => {
 
 // Afficher le fil
 exports.showFeed = (req, res) => {
-    const sqlFeed = "SELECT p.id, p.gif_desc, p.publication_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id ORDER BY p.id DESC";
+    const sqlFeed = "SELECT p.id, p.author_id, p.gif_desc, p.publication_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id ORDER BY p.id DESC";
 
     connection.query(sqlFeed, function (err, result) {
         if (err) {

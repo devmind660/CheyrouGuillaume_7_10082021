@@ -5,20 +5,23 @@
       <h2>Profil</h2>
       <div class="form">
         <div class="text-field">
-          <p>Nom d'utilisateur : {{ userProfile.username }}</p>
+          <p>Nom d'utilisateur : {{ this.$store.state.userInfos.username }}</p>
         </div>
         <div class="text-field">
-          <p>Adresse email : {{ userProfile.email }}</p>
+          <p>Adresse email : {{ this.$store.state.userInfos.email }}</p>
         </div>
         <div class="text-field">
-          <p>Date de création : {{ userProfile.creation_date }}</p>
+          <p>Inscrit le {{ this.$store.state.userInfos.creation_date }}</p>
+        </div>
+        <div v-if="this.$store.state.user.isAdmin === 1" class="text-field">
+          <p>Compte ayant des droits d'administration</p>
         </div>
         <div class="text-field text-field__option">
           <p v-if="!deleteConfirm">Gérer mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setDelete">Supprimer</a></p>
           <p v-if="deleteConfirm">Supprimer mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setRead">Annuler</a></p>
         </div>
         <button v-if="!deleteConfirm" @click="logout()" class="btn btn__lg btn__danger">Déconnexion</button>
-        <button v-if="deleteConfirm" @click="deleteUser(user.id)" class="btn btn__lg btn__danger">Supprimer</button>
+        <button v-if="deleteConfirm" @click="deleteUser(this.$store.state.user.userId)" class="btn btn__lg btn__danger">Supprimer</button>
       </div>
     </section>
   </div>
@@ -35,7 +38,6 @@ export default {
   data() {
     return {
       deleteConfirm: false,
-      userProfile: {}
     }
   },
   computed: {
@@ -48,12 +50,6 @@ export default {
       this.$router.push('/');
       return ;
     }
-/*
-    axios.get('http://localhost:3000/api/user/:', {
-      params: { user: userProfile.username }
-    })
-        .then(res => this.user = res.data)
-*/
     this.$store.dispatch('showProfile');
   },
   methods: {
@@ -62,8 +58,8 @@ export default {
       this.$router.push('/');
     },
     deleteUser(id) {
-      axios.delete('http://localhost:3000/api/user/:' + id)
-          .then(() => this.$router.push('/'))
+      axios.delete('http://localhost:3000/api/user/' + id)
+          .then(() => this.logout())
     },
     setRead() {
       this.deleteConfirm = false

@@ -22,7 +22,7 @@
   box-sizing: border-box;
 }
 body {
-  background-color: #2A52BE;
+  background-color: $primary;
 }
 
 // ---------- GENERAL | APP ----------
@@ -141,9 +141,15 @@ body {
     border-radius: 3px;
     position: relative;
 
-    span {
+    img {
+/*
       text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       display: block;
+*/
+      padding: 0 30px;
     }
     button.icon {
       color: $danger;
@@ -159,9 +165,14 @@ body {
 
       h3 {
         font-size: 1.2rem;
+        white-space: nowrap;
         padding: 8px 10px;
         @media (max-width: 420px) {
           padding-bottom: 0;
+        }
+        &.anonyme {
+          color: $secondary;
+          font-style: italic;
         }
       }
       small {
@@ -194,14 +205,12 @@ body {
         cursor: pointer;
       }
     }
-
     label {
       min-width: 120px;
       @media (max-width: 420px) {
         margin-bottom: 5px;
       }
     }
-
     input, textarea {
       font-size: 1rem;
       outline: none;
@@ -209,15 +218,9 @@ body {
       padding: 8px 10px;
       width: 100%;
       transition: all 0.3s ease;
-      &[required] {
-        border: 1px solid $primary;
-        &:focus {
-          border: 1px solid silver;
-        }
-      }
-      &[disabled] {
-        background-color: ghostwhite;
-        border: 1px solid lightgray;
+      border: 1px solid $primary;
+      &:focus {
+        border: 1px solid $secondary;
       }
     }
   }
@@ -263,15 +266,23 @@ body {
       }
     }
     &[disabled] {
-      background-color: lightgray;
+      background-color: $secondary;
       cursor: default;
     }
   }
   .icon {
     background-color: transparent;
     &[disabled] {
-      color: lightgray;
+      color: $secondary;
       cursor: not-allowed;
+    }
+  }
+  .error-list {
+    color: $danger;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    p, li {
+      margin-bottom: 5px;
     }
   }
 }

@@ -11,6 +11,7 @@ if (!user) {
   user = {
     userId: -1,
     token: '',
+    isAdmin: 0
   };
 } else {
   try {
@@ -20,6 +21,7 @@ if (!user) {
     user = {
       userId: -1,
       token: '',
+      isAdmin: 0
     };
   }
 }
@@ -60,7 +62,7 @@ export default createStore({
     login: ({commit}, userInfos) => {
       commit('setStatus', 'loading');
       return new Promise((resolve, reject) => {
-        instance.post('api/auth/login', userInfos)
+        instance.post('api/user/login', userInfos)
             .then(function (res) {
               commit('setStatus', '');
               commit('logUser', res.data);
@@ -76,7 +78,7 @@ export default createStore({
       commit('setStatus', 'loading');
       return new Promise((resolve, reject) => {
         commit;
-        instance.post('api/auth/signup', userInfos)
+        instance.post('api/user/signup', userInfos)
             .then(function (res) {
               commit('setStatus', 'success_signup');
               resolve(res);
@@ -88,9 +90,9 @@ export default createStore({
       });
     },
     showProfile: ({commit}) => {
-      instance.get('api/auth/showProfile')
-          .then(function (res) {
-            commit('userInfos', res.data.result[0]);
+      instance.get('/api/user/')
+          .then(function (response) {
+            commit('userInfos', response.data);
           })
           .catch(err => console.log(err.message))
     },

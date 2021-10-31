@@ -19,6 +19,7 @@ exports.signup = (req, res) => {
 
             connection.query(sqlSignup, values, function (err, result) {
                 if (err) {
+                    console.error(err);
                     return res.status(400).json({ error: err })
                 }
                 res.status(201).json({ message: 'Utilisateur créé !' });
@@ -34,7 +35,7 @@ exports.login = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    const sqlEmail = "SELECT u.password FROM Users u WHERE u.email = ?";
+    const sqlEmail = "SELECT u.id, u.password, u.admin_rights FROM Users u WHERE u.email = ?";
 
     connection.query(sqlEmail, [email], function(err, result) {
         if (err) {
@@ -46,22 +47,19 @@ exports.login = (req, res) => {
         }
         const sqlPassword = result[0].password;
 
-        // TODO : Vérifier que le booléen isAdmin fonctionne
         bcrypt.compare(password, sqlPassword)
             .then(valid => {
-                if (!valid /* TODO : && req.user && req.user */) {
+                if (!valid && req.user && req.user) {
                     return res.status(401).json({ error: 'Mot de passe incorrect !' });
                 }
                 res.status(200).json({
+                    isAdmin: result[0].admin_rights,
+                    userId: result[0].id,
                     token: jwt.sign(
                         {
                             userId: result[0].id,
-                            username: result[0].username,
-                            email: result[0].email,
-                            creationDate: result[0].creation_date,
-                            adminRights: result[0].admin_rights
                         },
-                        'RANDOM_TOKEN_SECRET',
+                        process.env.TOKEN,
                         { expiresIn: '24h' },
                     )
                 });
@@ -74,18 +72,18 @@ exports.login = (req, res) => {
 
 // Afficher les infos utilisateur
 exports.showProfile = (req, res) => {
-    const userToken = req.headers.authorization.split(' ')[1];
+    const userToken = req.headers.authorization;
+    const userInfo = jwt.verify(userToken, process.env.TOKEN);
+    const userId = userInfo.userId
 
-    console.error(userToken)
-    const sqlUser = "SELECT u.id, u.username, u.email, u.creation_date, u.admin_rights FROM Users u WHERE u.username = ?";
+    const sqlShowProfile = "SELECT u.username, u.email, u.creation_date, u.admin_rights FROM Users u WHERE u.id = ?";
 
-    connection.query(sqlUser, [userToken], function (err, result) {
+    connection.query(sqlShowProfile,[userId], function (err, result) {
         if (err) {
             return res.status(500).json(err.message);
         }
-        // Si aucun utilisateur ne correspond à ce token
         if (result.length === 0) {
-            return res.status(401).json({ message: "Utilisateur non-authentifié !" });
+            return res.status(400).json({ message: "User non trouvé !" });
         }
         res.status(200).json(result[0]);
     });
