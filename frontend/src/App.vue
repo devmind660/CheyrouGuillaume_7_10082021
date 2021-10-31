@@ -139,23 +139,11 @@ body {
     background-color: white;
     border: 1px solid $primary;
     border-radius: 3px;
-    position: relative;
 
-    img {
-/*
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: block;
-*/
-      padding: 0 30px;
-    }
     button.icon {
+      background-color: transparent;
       color: $danger;
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
+      padding-left: 8px;
       &:hover {
         color: lighten($danger, $hover-gradient);
       }
@@ -270,13 +258,6 @@ body {
       cursor: default;
     }
   }
-  .icon {
-    background-color: transparent;
-    &[disabled] {
-      color: $secondary;
-      cursor: not-allowed;
-    }
-  }
   .error-list {
     color: $danger;
     font-size: 0.9rem;
@@ -284,6 +265,12 @@ body {
     p, li {
       margin-bottom: 5px;
     }
+  }
+  .post-image {
+    object-fit: cover;
+    overflow: hidden;
+    object-position: center;
+    width: 100%;
   }
 }
 </style>

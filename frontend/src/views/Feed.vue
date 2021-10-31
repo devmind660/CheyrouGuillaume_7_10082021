@@ -6,22 +6,24 @@
     <MainTitle title="Forum des salariés"></MainTitle>
     <section class="wrapper wrapper__lg">
       <h2>Forum・{{ feed.length }} <i class="far fa-comment-dots"></i></h2>
-      <ul>
+      <ul v-if="feed.length">
         <li v-for="post in feed" :key="post.id">
           <article>
-            <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
             <div class="text-field">
               <h3 v-if="post.username">{{ post.username }}</h3>
               <h3 v-else class="anonyme">Anonyme</h3>
-              <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small>
+              <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}
+                <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
+              </small>
             </div>
-            <router-link :to="{ name: 'Post', params: { id: post.id } }">
-              <img :src="post.gif_url" />
-            </router-link>
             <p class="text-content">{{ post.gif_desc }}</p>
+            <router-link :to="{ name: 'Post', params: { id: post.id } }">
+              <img class="post-image" :src="post.gif_url" alt="{{ post.gif_desc }}" />
+            </router-link>
           </article>
         </li>
       </ul>
+      <h3 v-else>Il n'y a aucun post pour le moment.</h3>
     </section>
   </div>
 </template>
@@ -76,5 +78,8 @@ div#home__banner {
     min-width: 250px;
     max-width: 500px;
   }
+}
+article img {
+  max-height: 60vh;
 }
 </style>

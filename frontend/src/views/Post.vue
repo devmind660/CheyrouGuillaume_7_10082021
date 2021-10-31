@@ -4,19 +4,20 @@
     <section v-if="post.gif_url" class="wrapper wrapper__lg">
       <h2>Post・{{ comments.length }} <i class="far fa-comment-dots"></i></h2>
       <article>
-        <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
         <div class="text-field">
           <h3 v-if="post.username">{{ post.username }}</h3>
           <h3 v-else class="anonyme">Anonyme</h3>
-          <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}</small><br>
+          <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}
+            <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
+          </small>
         </div>
-        <img :src="post.gif_url" />
-        <p class="text-content">{{ post.gif_desc }}</p>
+        <p v-if="post.gif_desc" class="text-content">{{ post.gif_desc }}</p>
+        <img class="post-image" :src="post.gif_url" alt="{{ post.gif_desc }}" />
       </article>
     </section>
     <section v-if="post.gif_url" class="wrapper wrapper__lg">
       <div class="text-field text-field__comment">
-        <button @click="createComment()" class="icon" type="submit" :disabled="!comment" title="Publier le commentaire"><i class="fas fa-paper-plane fa-lg"></i></button>
+        <button @click="createComment()" type="submit" :disabled="!comment" title="Publier le commentaire"><i class="fas fa-paper-plane fa-lg"></i></button>
         <label for="comment">Commentaire :</label>
         <textarea v-model="comment" id="comment" name="comment" placeholder="Laisser un commentaire…" maxlength="255" required></textarea>
       </div>
@@ -26,17 +27,18 @@
       <ul v-if="comments.length">
         <li v-for="comment in comments" :key="comment.id">
           <article>
-            <button v-if="comment.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deleteComment(comment.id)" class="icon" title="Supprimer le commentaire"><i class="fas fa-trash-alt fa-lg"></i></button>
             <div class="text-field">
               <h3 v-if="comment.username">{{ comment.username }}</h3>
               <h3 v-else class="anonyme">Anonyme</h3>
-              <small>{{ 'Le ' + comment.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + comment.publication_date.slice(11, 16) }}</small>
+              <small>{{ 'Le ' + comment.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + comment.publication_date.slice(11, 16) }}
+                <button v-if="comment.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deleteComment(comment.id)" class="icon" title="Supprimer le commentaire"><i class="fas fa-trash-alt fa-lg"></i></button>
+              </small>
             </div>
             <p class="text-content">{{ comment.gif_comment }}</p>
           </article>
         </li>
       </ul>
-      <h3 v-else>Aucun commentaire</h3>
+      <h3 v-else>Il n'y a aucun commentaire pour le moment.</h3>
     </section>
     <ErrorMessage v-else error="404" message="Le post demandé n'a pas été trouvé ou n'existe pas"></ErrorMessage>
   </div>
@@ -55,7 +57,7 @@ export default {
   data() {
     return {
       post: {},
-      comment: null,
+      comment: '',
       comments: []
     }
   },
@@ -108,13 +110,18 @@ export default {
 .text-field__comment {
   position: relative;
 
-  button.icon {
+  button {
+    background-color: transparent;
     color: $info;
     position: absolute;
     right: 10px;
     bottom: 10px;
     &:hover {
       color: lighten($info, $hover-gradient);
+    }
+    &[disabled] {
+      color: $secondary;
+      cursor: not-allowed;
     }
   }
 }
