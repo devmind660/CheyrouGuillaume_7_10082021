@@ -7,12 +7,14 @@
         <div class="text-field">
           <h3 v-if="post.username">{{ post.username }}</h3>
           <h3 v-else class="anonyme">Anonyme</h3>
-          <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}
+          <small>{{ post.gif_date }}
             <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
           </small>
         </div>
         <p v-if="post.gif_desc" class="text-content">{{ post.gif_desc }}</p>
-        <img class="post-image" :src="post.gif_url" alt="{{ post.gif_desc }}" />
+        <div class="img-content">
+          <img :src="post.gif_url" alt="{{ post.gif_desc }}" />
+        </div>
       </article>
     </section>
     <section v-if="post.gif_url" class="wrapper wrapper__lg">
@@ -30,7 +32,7 @@
             <div class="text-field">
               <h3 v-if="comment.username">{{ comment.username }}</h3>
               <h3 v-else class="anonyme">Anonyme</h3>
-              <small>{{ 'Le ' + comment.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + comment.publication_date.slice(11, 16) }}
+              <small>{{ comment.comment_date }}
                 <button v-if="comment.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deleteComment(comment.id)" class="icon" title="Supprimer le commentaire"><i class="fas fa-trash-alt fa-lg"></i></button>
               </small>
             </div>

@@ -15,4 +15,6 @@ connection.connect(function(error) {
     console.log('You are now connected to MySQL...')
 });
 
+connection.query("SET GLOBAL time_zone = \"+01:00\"")
+
 module.exports = connection;

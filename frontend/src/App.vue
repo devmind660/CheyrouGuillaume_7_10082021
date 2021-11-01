@@ -224,6 +224,15 @@ body {
   .text-content {
     margin: 8px 10px;
   }
+  .img-content {
+    line-height: 0;
+    img {
+      object-fit: cover;
+      overflow: hidden;
+      object-position: center;
+      width: 100%;
+    }
+  }
   button {
     border: none;
     cursor: pointer;
@@ -265,12 +274,6 @@ body {
     p, li {
       margin-bottom: 5px;
     }
-  }
-  .post-image {
-    object-fit: cover;
-    overflow: hidden;
-    object-position: center;
-    width: 100%;
   }
 }
 </style>

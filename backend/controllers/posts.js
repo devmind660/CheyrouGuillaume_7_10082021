@@ -24,7 +24,7 @@ exports.createPost = (req, res) => {
 exports.showPost = (req, res) => {
     const postId = req.query.id;
 
-    const sqlPost = "SELECT p.id, p.author_id, p.gif_desc, p.publication_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id WHERE p.id = ?";
+    const sqlPost = "SELECT p.id, p.author_id, p.gif_desc, p.publication_date, DATE_FORMAT(p.publication_date, 'Le %d/%m/%Y à %H:%i') AS gif_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id WHERE p.id = ?";
 
     connection.query(sqlPost, [postId], function (err, result) {
         if (err) { // err 500
@@ -38,26 +38,20 @@ exports.showPost = (req, res) => {
 exports.deletePost = (req, res) => {
     const postId = req.params.id;
 
-    const sqlDeleteComments = "DELETE FROM Gif_comments WHERE gif_id = ?"
+        const sqlDeletePost = "DELETE FROM Gif_posts WHERE id = ?"
 
-    connection.query(sqlDeleteComments, [postId], function (err, result) {
+    // Les commentaires liés seront supprimés en cascade avec le post (grâce aux contraintes de clés étrangères)
+    connection.query(sqlDeletePost, [postId], function (err, result) {
         if (err) {
             return res.status(400).json({ error: err })
         }
-        let sqlDeletePost = "DELETE FROM Gif_posts WHERE id = ?"
-
-        connection.query(sqlDeletePost, [postId], function (err, result) {
-            if (err) {
-                return res.status(400).json({ error: err })
-            }
-            res.status(201).json({ message: 'Post supprimé !' })
-        });
+        res.status(201).json({ message: 'Post supprimé !' })
     });
 };
 
 // Afficher le fil
 exports.showFeed = (req, res) => {
-    const sqlFeed = "SELECT p.id, p.author_id, p.gif_desc, p.publication_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id ORDER BY p.id DESC";
+    const sqlFeed = "SELECT p.id, p.author_id, p.gif_desc, p.publication_date, DATE_FORMAT(p.publication_date, 'Le %d/%m/%Y à %H:%i') AS gif_date, p.gif_url, u.username FROM Gif_posts p LEFT JOIN Users u ON p.author_id = u.id ORDER BY p.id DESC";
 
     connection.query(sqlFeed, function (err, result) {
         if (err) {

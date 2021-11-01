@@ -36,7 +36,7 @@ exports.deleteComment = (req, res) => {
 exports.showComments = (req, res) => {
     const postId = req.query.id;
 
-    const sqlComments = "SELECT c.id, c.author_id, c.gif_comment, c.publication_date, u.username FROM Gif_comments c LEFT JOIN Users u ON c.author_id = u.id WHERE c.gif_id = ? ORDER BY c.id DESC";
+    const sqlComments = "SELECT c.id, c.author_id, c.gif_comment, c.publication_date, DATE_FORMAT(c.publication_date, 'Le %d/%m/%Y à %H:%i') AS comment_date, u.username FROM Gif_comments c LEFT JOIN Users u ON c.author_id = u.id WHERE c.gif_id = ? ORDER BY c.id DESC";
 
     connection.query(sqlComments, [postId],  function (err, result) {
         if (err) {

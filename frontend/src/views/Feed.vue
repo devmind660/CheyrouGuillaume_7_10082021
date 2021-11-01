@@ -12,14 +12,16 @@
             <div class="text-field">
               <h3 v-if="post.username">{{ post.username }}</h3>
               <h3 v-else class="anonyme">Anonyme</h3>
-              <small>{{ 'Le ' + post.publication_date.slice(0, 10).split('-').reverse().join('/') + ' à ' + post.publication_date.slice(11, 16) }}
+              <small>{{ post.gif_date }}
                 <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
               </small>
             </div>
             <p class="text-content">{{ post.gif_desc }}</p>
-            <router-link :to="{ name: 'Post', params: { id: post.id } }">
-              <img class="post-image" :src="post.gif_url" alt="{{ post.gif_desc }}" />
-            </router-link>
+            <div class="img-content">
+              <router-link :to="{ name: 'Post', params: { id: post.id } }">
+                <img :src="post.gif_url" alt="" />
+              </router-link>
+            </div>
           </article>
         </li>
       </ul>
@@ -79,7 +81,7 @@ div#home__banner {
     max-width: 500px;
   }
 }
-article img {
+.img-content img {
   max-height: 60vh;
 }
 </style>

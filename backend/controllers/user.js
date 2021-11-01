@@ -76,7 +76,7 @@ exports.showProfile = (req, res) => {
     const userInfo = jwt.verify(userToken, process.env.TOKEN);
     const userId = userInfo.userId
 
-    const sqlShowProfile = "SELECT u.username, u.email, u.creation_date, u.admin_rights FROM Users u WHERE u.id = ?";
+    const sqlShowProfile = "SELECT u.username, u.email, u.creation_date, DATE_FORMAT(u.creation_date, '%d/%m/%Y') AS user_date, u.admin_rights FROM Users u WHERE u.id = ?";
 
     connection.query(sqlShowProfile,[userId], function (err, result) {
         if (err) {
