@@ -186,6 +186,7 @@ body {
       flex-wrap: wrap;
     }
     &__option p {
+      text-align: right;
       margin-left: auto;
 
       a:hover {
@@ -274,6 +275,15 @@ body {
     p, li {
       margin-bottom: 5px;
     }
+  }
+  .success {
+    color: $success;
+  }
+  .error {
+    color: $danger;
+  }
+  .info {
+    color: $info;
   }
 }
 </style>

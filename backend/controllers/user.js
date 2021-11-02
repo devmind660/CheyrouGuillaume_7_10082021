@@ -15,7 +15,7 @@ exports.signup = (req, res) => {
                 + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
             const values = [username, email, hash];
 
-            // TODO : Empêcher le double email ? CAR DEJA impossible d'avoir 2 mails identiques sur mySQL
+            // TODO : sqlState 23000
 
             connection.query(sqlSignup, values, function (err, result) {
                 if (err) {

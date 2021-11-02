@@ -6,7 +6,6 @@ const multer = require('../middleware/multer-config');
 
 const postCtrl = require('../controllers/posts');
 
-// TODO : ajouter le middleware auth
 router.get('/', postCtrl.showFeed);
 router.post('/', multer, postCtrl.createPost);
 router.get('/:id', postCtrl.showPost);
