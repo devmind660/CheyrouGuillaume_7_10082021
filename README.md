@@ -7,4 +7,5 @@ file backend/.env {
   DBUSER=root,
   PASSWORD=root,
   DATABASE=groupomania
+  TOKEN='RANDOM_TOKEN_SECRET'
 }

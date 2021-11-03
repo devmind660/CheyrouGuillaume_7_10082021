@@ -9,6 +9,7 @@
       <router-link to="/profile" v-if="this.$store.state.user.userId !== -1"><i class="fas fa-user-circle"></i><span>Profil</span></router-link>
     </nav>
   </header>
+  <!-- VIEWS HERE -->
   <router-view />
 </template>
 

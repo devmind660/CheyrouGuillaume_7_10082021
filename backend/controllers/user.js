@@ -1,7 +1,7 @@
-const connection = require('../models/connection')
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-dotenv = require('dotenv').config();
+const connection = require('../models/connection'); // Connexion à la base de données MySQL
+const bcrypt = require('bcrypt'); // Encodage du mot de passe
+const jwt = require('jsonwebtoken'); // Création du token d'authentification
+dotenv = require('dotenv').config(); // Masque les informations de connection à la BDD à l'aide de variables d'environnement -> fichier .env
 
 // Inscription
 exports.signup = (req, res) => {
@@ -9,6 +9,7 @@ exports.signup = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
+    // Hachage x10 du mot de passe
     bcrypt.hash(password, 10)
         .then(hash => {
             const sqlSignup = "INSERT INTO Users (username, email, password)"
@@ -45,16 +46,20 @@ exports.login = (req, res) => {
         if (result.length === 0) {
             return res.status(401).json({ error: "Utilisateur non trouvé !" });
         }
+        // Récupération du mot de passe dans la BDD
         const sqlPassword = result[0].password;
 
+        // Comparaison des deux mots de passe encodés
         bcrypt.compare(password, sqlPassword)
             .then(valid => {
                 if (!valid && req.user && req.user) {
                     return res.status(401).json({ error: 'Mot de passe incorrect !' });
                 }
                 res.status(200).json({
+                    // Récupération de l'userId et de ses privilèges
                     isAdmin: result[0].admin_rights,
                     userId: result[0].id,
+                    // Création du token d'authentification
                     token: jwt.sign(
                         {
                             userId: result[0].id,
@@ -97,7 +102,7 @@ exports.deleteUser = (req, res) => {
 
     connection.query(sqlDeleteUser, [userId], function (err, result) {
         if (err) {
-            return res.status(400).json({ error: err })
+            return res.status(500).json({ error: err })
         }
         res.status(201).json({ message: 'Utilisateur supprimé !' })
     });

@@ -52,18 +52,21 @@ export default {
     ...mapState(["status"])
   },
   mounted() {
+    // Renvoie l'user non connecté sur la page de connexion
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
     }
   },
   methods: {
-    checkUrl() { // Vérifie que l'URL est accessible
+    // Vérifie que l'URL est accessible
+    checkUrl() {
       return axios.get(this.url)
           .then(() => this.validUrl = true)
           .catch(() => this.validUrl = false)
     },
+    // Publication du post si l'URL est validée
     createPost() {
-      this.checkUrl() // Si l'URL est valide le post est publié
+      this.checkUrl()
           .then(() => {
                 if (this.url && this.validUrl === true) {
                   axios.post('http://localhost:3000/api/posts/', {

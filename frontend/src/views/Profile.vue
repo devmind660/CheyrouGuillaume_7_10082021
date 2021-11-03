@@ -46,17 +46,21 @@ export default {
     })
   },
   mounted() {
+    // Renvoie l'user non connecté sur la page de connexion
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
       return ;
     }
+    // Affichage du profil
     this.$store.dispatch('showProfile');
   },
   methods: {
+    // Déconnexion
     logout() {
       this.$store.commit('logout');
       this.$router.push('/');
     },
+    // Suppression de l'user via son id
     deleteUser(id) {
       axios.delete('http://localhost:3000/api/user/' + id)
           .then(() => this.logout())
@@ -64,6 +68,7 @@ export default {
     setRead() {
       this.deleteConfirm = false
     },
+    // Affichage de la confirmation de suppression du compte
     setDelete() {
       this.deleteConfirm = true
     }

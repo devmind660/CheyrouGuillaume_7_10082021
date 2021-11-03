@@ -67,30 +67,37 @@ export default {
     ...mapState(["status"])
   },
   mounted() {
+    // Renvoie l'user non connecté sur la page de connexion
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
     }
+    // Affichage des commentaires
     this.getComments();
+    // Affichage du post via son id
     axios.get('http://localhost:3000/api/posts/:', {
       params: { id: this.id }
     })
         .then(res => this.post = res.data)
   },
   methods: {
+    // Affichage des commentaires
     getComments() {
       axios.get('http://localhost:3000/api/comments/:', {
         params: { id: this.id }
       })
           .then(res => this.comments = res.data)
     },
+    // Suppression d'un post via son id
     deletePost(id) {
       axios.delete('http://localhost:3000/api/posts/' + id)
           .then(() => this.$router.push('/feed'))
     },
+    // Suppression d'un commentaire via son id
     deleteComment(id) {
       axios.delete('http://localhost:3000/api/comments/' + id)
-          .then(() => this.getComments())
+          .then(() => this.getComments()) // Actualisation des commentaires
     },
+    // Publication d'un commentaire
     createComment() {
       axios.post('http://localhost:3000/api/comments/', {
         user: this.$store.state.user.userId,
@@ -98,7 +105,7 @@ export default {
         comment: this.comment
       })
           .then(() => {
-            this.getComments();
+            this.getComments(); // Actualisation des commentaires
             this.comment = '';
           })
     }

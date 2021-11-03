@@ -57,9 +57,10 @@ export default {
   },
   components: { MainTitle },
   computed: {
+    // Vérifie que les champs de saisie ne soient pas vides, et que les mots de passe correspondent
     validatedFields: function () {
       if (this.display === 'signup') {
-        return this.username && this.email && this.password && this.password && this.confirm;
+        return this.username && this.email && this.password && this.password === this.confirm;
       } else {
         return this.email && this.password;
       }
@@ -67,17 +68,21 @@ export default {
     ...mapState(["status"])
   },
   mounted() {
+    // Renvoie l'user connecté sur la page de profil
     if (this.$store.state.user.userId !== -1) {
       this.$router.push('/profile');
     }
   },
   methods: {
+    // Affichage de la page de connexion
     setLogin() {
       this.display = 'login'
     },
+    // Affichage de la page d'inscription
     setSignup() {
       this.display = 'signup'
     },
+    // Inscription
     signup () {
       const self = this;
       this.$store.dispatch('signup', {
@@ -90,6 +95,7 @@ export default {
         console.log(err);
       })
     },
+    // Connection
     login() {
       const self = this;
       this.$store.dispatch('login', {

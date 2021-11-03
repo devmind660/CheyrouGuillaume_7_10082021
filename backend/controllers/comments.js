@@ -1,4 +1,4 @@
-const connection = require('../models/connection')
+const connection = require('../models/connection'); // Connexion à la base de données MySQL
 
 // Poster un commentaire
 exports.createComment = (req, res) => {
@@ -26,7 +26,7 @@ exports.deleteComment = (req, res) => {
 
     connection.query(sqlDeleteComment, [postId], function (err, result) {
         if (err) {
-            return res.status(400).json({ error: err })
+            return res.status(500).json({ error: err })
         }
         res.status(201).json({ message: 'Commentaire supprimé !' })
     });
@@ -36,7 +36,19 @@ exports.deleteComment = (req, res) => {
 exports.showComments = (req, res) => {
     const postId = req.query.id;
 
-    const sqlComments = "SELECT c.id, c.author_id, c.gif_comment, c.publication_date, DATE_FORMAT(c.publication_date, 'Le %d/%m/%Y à %H:%i') AS comment_date, u.username FROM Gif_comments c LEFT JOIN Users u ON c.author_id = u.id WHERE c.gif_id = ? ORDER BY c.id DESC";
+    const sqlComments =
+        // Données du commentaire de la table Gif_comments
+        "SELECT c.id, c.author_id, c.gif_comment, " +
+        // Formatage de la date JJ/MM/AAAA et de l'heure 00:00
+        "c.publication_date, DATE_FORMAT(c.publication_date, 'Le %d/%m/%Y à %H:%i') AS comment_date, " +
+        // Données de l'utilisateur de la table Users
+        "u.username " +
+        // Jointure en utilisant la clé étrangère author_id de la table Gif_comments liée à l'index id de la table Users
+        "FROM Gif_comments c LEFT JOIN Users u ON c.author_id = u.id " +
+        // Recherche de l'id unique auto-incrémenté de la table Gif_comments
+        "WHERE c.gif_id = ? " +
+        // Classement décroissant des données par l'id unique auto-incrémenté de la table Gif_comments
+        "ORDER BY c.id DESC";
 
     connection.query(sqlComments, [postId],  function (err, result) {
         if (err) {

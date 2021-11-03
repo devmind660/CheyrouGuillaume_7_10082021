@@ -43,19 +43,23 @@ export default {
     }
   },
   mounted() {
+    // Renvoie l'user non connecté sur la page de connexion
     if (this.$store.state.user.userId === -1) {
       this.$router.push('/');
     }
+    // Affichage des posts
     this.getFeed();
   },
   methods: {
+    // Affichage des posts
     getFeed() {
       axios.get('http://localhost:3000/api/posts/')
           .then(res => this.feed = res.data)
     },
+    // Suppresion d'un post via son id
     deletePost(id) {
       axios.delete('http://localhost:3000/api/posts/' + id)
-          .then(() => this.getFeed())
+          .then(() => this.getFeed()) // Actualisation des posts
     }
   }
 }
