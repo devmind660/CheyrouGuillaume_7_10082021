@@ -13,8 +13,9 @@
         <div class="text-field">
           <p>Inscrit le : {{ this.$store.state.userInfos.user_date }}</p>
         </div>
-        <div v-if="this.$store.state.user.isAdmin === 1" class="text-field">
-          <p>Compte ayant des droits d'administration.</p>
+        <div class="text-field">
+          <p v-if="this.$store.state.user.isAdmin === 1">Privilèges du compte : Administrateur</p>
+          <p v-else>Privilèges du compte : Membre</p>
         </div>
         <div class="text-field text-field__option">
           <p v-if="!deleteConfirm">Gérer mon compte&ensp;<i class="fas fa-angle-right"></i>&ensp;<a role="button" @click="setDelete">Supprimer</a></p>
