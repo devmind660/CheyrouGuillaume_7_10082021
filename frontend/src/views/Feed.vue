@@ -16,10 +16,10 @@
                 <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
               </small>
             </div>
-            <p class="text-content">{{ post.gif_desc }}</p>
+            <p v-if="post.gif_title" class="text-content">{{ post.gif_title }}</p>
             <div class="img-content">
               <router-link :to="{ name: 'Post', params: { id: post.id } }">
-                <img :src="post.gif_url" alt="" />
+                <img :src="post.gif_url" :alt="post.gif_desc" />
               </router-link>
             </div>
           </article>

@@ -3,12 +3,13 @@ const connection = require('../models/connection'); // Connexion à la base de d
 // Poster un GIF
 exports.createPost = (req, res) => {
     const userId = req.body.user;
+    const gifTitle = req.body.title;
     const gifDesc = req.body.description;
     const gifUrl = req.body.url;
 
-    const sqlCreatePost = "INSERT INTO Gif_posts (author_id, gif_desc, gif_url)"
-        + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
-    const values = [userId, gifDesc, gifUrl];
+    const sqlCreatePost = "INSERT INTO Gif_posts (author_id, gif_title, gif_desc, gif_url)"
+        + "VALUES (?, ?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
+    const values = [userId, gifTitle, gifDesc, gifUrl];
 
     connection.query(sqlCreatePost, values, function (err, result) {
         if (err) {
@@ -24,7 +25,7 @@ exports.showPost = (req, res) => {
 
     const sqlPost =
         // Données du post de la table Gif_posts
-        "SELECT p.id, p.author_id, p.gif_desc, p.gif_url, " +
+        "SELECT p.id, p.author_id, p.gif_title, p.gif_desc, p.gif_url, " +
         // Formatage de la date JJ/MM/AAAA et de l'heure 00:00
         "p.publication_date, DATE_FORMAT(p.publication_date, 'Le %d/%m/%Y à %H:%i') AS gif_date, " +
         // Données de l'utilisateur de la table Users
@@ -61,7 +62,7 @@ exports.deletePost = (req, res) => {
 exports.showFeed = (req, res) => {
     const sqlFeed =
         // Données du post de la table Gif_posts
-        "SELECT p.id, p.author_id, p.gif_desc, p.gif_url, " +
+        "SELECT p.id, p.author_id, p.gif_title, p.gif_desc, p.gif_url, " +
         // Formatage de la date JJ/MM/AAAA et de l'heure 00:00
         "p.publication_date, DATE_FORMAT(p.publication_date, 'Le %d/%m/%Y à %H:%i') AS gif_date, " +
         // Données de l'utilisateur de la table Users

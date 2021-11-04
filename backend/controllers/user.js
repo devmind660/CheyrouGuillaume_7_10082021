@@ -16,8 +16,6 @@ exports.signup = (req, res) => {
                 + "VALUES (?, ?, ?)"; // On ne met pas les colonnes avec valeur par défaut
             const values = [username, email, hash];
 
-            // TODO : sqlState 23000
-
             connection.query(sqlSignup, values, function (err, result) {
                 if (err) {
                     console.error(err);
