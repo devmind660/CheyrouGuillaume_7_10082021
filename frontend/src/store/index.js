@@ -10,9 +10,7 @@ const instance = axios.create({
 let user = localStorage.getItem('user');
 if (!user) {
   user = {
-    userId: -1,
-    token: '',
-    isAdmin: 0
+    token: null,
   };
 } else {
   try {
@@ -20,9 +18,7 @@ if (!user) {
     instance.defaults.headers.common['Authorization'] = user.token;
   } catch (ex) {
     user = {
-      userId: -1,
-      token: '',
-      isAdmin: 0
+      token: null,
     };
   }
 }
@@ -33,10 +29,8 @@ export default createStore({
     status: '',
     // user est défini plus haut
     user: user,
+    rights: null,
     userInfos: {
-      username: '',
-      email: '',
-      password: '',
     }
   },
   mutations: {
@@ -56,8 +50,7 @@ export default createStore({
     // Lors de la déconnexion, user est supprimé du localstorage
     logout: function (state) {
       state.user = {
-        userId: -1,
-        token: '',
+        token: null,
       }
       localStorage.removeItem('user');
     }

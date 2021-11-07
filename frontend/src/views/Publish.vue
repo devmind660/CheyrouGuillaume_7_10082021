@@ -5,18 +5,18 @@
       <h2>Publication</h2>
       <div class="form">
         <div class="input-field text-field">
+          <label for="url">URL du GIF :</label>
           <button v-if="url && validUrl === null" class="info"><i title="Vérification de l'URL en cours…" class="fas fa-spinner"></i></button>
           <button v-if="validUrl === false" class="error"><i @click="resetInput()" title="URL invalide | Effacer la saisie" class="fas fa-unlink"></i></button>
           <button v-if="url && validUrl === true" class="success"><i @click="resetInput()" title="URL valide | Effacer la saisie" class="fas fa-link"></i></button>
-          <label for="url">URL du GIF :</label>
           <input v-model="url" @input="checkUrl()" type="text" id="url" name="url" placeholder="https://…" required />
         </div>
         <div v-if="validUrl === false" class="text-field text-field__option">
           <p>Pour choisir une image : rendez-vous sur Google image ou Bing image, puis faites un clic droit [copier le lien de l'image] sur l'image souhaitée.</p>
         </div>
         <div v-if="url && validUrl === true" class="input-field text-field">
-          <button v-if="!description" @click="info = !info" class="info"><i title="Qu'est-ce que c'est ?" class="fas fa-question"></i></button>
           <label for="description">Texte alternatif :</label>
+          <button v-if="!description" @click="info = !info" class="info"><i title="Qu'est-ce que c'est ?" class="fas fa-question"></i></button>
           <input v-model="description" type="text" id="description" name="description" placeholder="Décrivez l'image" maxlength="255" required />
         </div>
         <div v-show="!description && info" class="text-field text-field__option">
@@ -63,7 +63,7 @@ export default {
   },
   mounted() {
     // Renvoie l'user non connecté sur la page de connexion
-    if (this.$store.state.user.userId === -1) {
+    if (!this.$store.state.user.token) {
       this.$router.push('/');
     }
   },
@@ -87,7 +87,7 @@ export default {
           .then(() => {
                 if (this.url && this.validUrl === true) {
                   axios.post('http://localhost:3000/api/posts/', {
-                    user: this.$store.state.user.userId,
+                    user: this.$store.state.userInfos.id,
                     url: this.url,
                     description: this.description,
                     title: this.title

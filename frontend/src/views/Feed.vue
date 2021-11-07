@@ -3,7 +3,7 @@
     <div id="home__banner">
       <img src="../assets/logos/icon-left-font-monochrome-white.svg" alt="logo groupomania">
     </div>
-    <MainTitle title="Forum des salariés"></MainTitle>
+    <MainTitle title="Fil du forum"></MainTitle>
     <section class="wrapper wrapper__lg">
       <h2>Forum・{{ feed.length }} <i class="far fa-comment-dots"></i></h2>
       <ul v-if="feed.length">
@@ -13,10 +13,10 @@
               <h3 v-if="post.username">{{ post.username }}</h3>
               <h3 v-else class="anonyme">Anonyme</h3>
               <small>{{ post.gif_date }}
-                <button v-if="post.author_id === this.$store.state.user.userId || this.$store.state.user.isAdmin === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
+                <button v-if="post.author_id === this.$store.state.userInfos.id || this.$store.state.userInfos.admin_rights === 1" @click="deletePost(post.id)" class="icon" title="Supprimer le post"><i class="fas fa-trash-alt fa-lg"></i></button>
               </small>
             </div>
-            <p v-if="post.gif_title" class="text-content">{{ post.gif_title }}</p>
+            <p class="text-content">{{ post.gif_title }}</p>
             <div class="img-content">
               <router-link :to="{ name: 'Post', params: { id: post.id } }">
                 <img :src="post.gif_url" :alt="post.gif_desc" />
@@ -44,7 +44,7 @@ export default {
   },
   mounted() {
     // Renvoie l'user non connecté sur la page de connexion
-    if (this.$store.state.user.userId === -1) {
+    if (!this.$store.state.user.token) {
       this.$router.push('/');
     }
     // Affichage des posts

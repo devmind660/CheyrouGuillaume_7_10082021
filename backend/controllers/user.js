@@ -54,13 +54,11 @@ exports.login = (req, res) => {
                     return res.status(401).json({ error: 'Mot de passe incorrect !' });
                 }
                 res.status(200).json({
-                    // Récupération de l'userId et de ses privilèges
-                    isAdmin: result[0].admin_rights,
-                    userId: result[0].id,
                     // Création du token d'authentification
                     token: jwt.sign(
                         {
                             userId: result[0].id,
+                            isAdmin: result[0].admin_rights,
                         },
                         process.env.TOKEN,
                         { expiresIn: '24h' },
@@ -79,7 +77,7 @@ exports.showProfile = (req, res) => {
     const userInfo = jwt.verify(userToken, process.env.TOKEN);
     const userId = userInfo.userId
 
-    const sqlShowProfile = "SELECT u.username, u.email, u.creation_date, DATE_FORMAT(u.creation_date, '%d/%m/%Y') AS user_date, u.admin_rights FROM Users u WHERE u.id = ?";
+    const sqlShowProfile = "SELECT u.id, u.username, u.email, u.creation_date, DATE_FORMAT(u.creation_date, '%d/%m/%Y') AS user_date, u.admin_rights FROM Users u WHERE u.id = ?";
 
     connection.query(sqlShowProfile,[userId], function (err, result) {
         if (err) {

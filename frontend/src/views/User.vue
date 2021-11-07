@@ -69,7 +69,7 @@ export default {
   },
   mounted() {
     // Renvoie l'user connecté sur la page de profil
-    if (this.$store.state.user.userId !== -1) {
+    if (this.$store.state.user.token) {
       this.$router.push('/profile');
     }
   },

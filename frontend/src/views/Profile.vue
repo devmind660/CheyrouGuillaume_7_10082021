@@ -14,7 +14,7 @@
           <p>Inscrit le : {{ this.$store.state.userInfos.user_date }}</p>
         </div>
         <div class="text-field">
-          <p v-if="this.$store.state.user.isAdmin === 1">Privilèges du compte : Administrateur</p>
+          <p v-if="this.$store.state.userInfos.admin_rights === 1">Privilèges du compte : Administrateur</p>
           <p v-else>Privilèges du compte : Membre</p>
         </div>
         <div class="text-field text-field__option">
@@ -48,7 +48,7 @@ export default {
   },
   mounted() {
     // Renvoie l'user non connecté sur la page de connexion
-    if (this.$store.state.user.userId === -1) {
+    if (!this.$store.state.user.token) {
       this.$router.push('/');
       return ;
     }
