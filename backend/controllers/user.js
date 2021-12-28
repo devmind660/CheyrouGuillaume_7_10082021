@@ -34,7 +34,7 @@ exports.login = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    const sqlEmail = "SELECT u.id, u.password, u.admin_rights FROM Users u WHERE u.email = ?";
+    const sqlEmail = "SELECT u.id, u.password FROM Users u WHERE u.email = ?";
 
     connection.query(sqlEmail, [email], function(err, result) {
         if (err) {
@@ -50,16 +50,13 @@ exports.login = (req, res) => {
         // Comparaison des deux mots de passe encodés
         bcrypt.compare(password, sqlPassword)
             .then(valid => {
-                if (!valid && req.user && req.user) {
+                if (!valid) {
                     return res.status(401).json({ error: 'Mot de passe incorrect !' });
                 }
                 res.status(200).json({
                     // Création du token d'authentification
                     token: jwt.sign(
-                        {
-                            userId: result[0].id,
-                            isAdmin: result[0].admin_rights,
-                        },
+                        { userId: result[0].id },
                         process.env.TOKEN,
                         { expiresIn: '24h' },
                     )
