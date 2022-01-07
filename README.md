@@ -17,7 +17,7 @@ DBPORT=8889,
 DBUSER=root,
 PASSWORD=root,
 DATABASE=groupomania
-TOKEN='RANDOM_TOKEN_SECRET'
+TOKEN='gdci6ks37ndk9bv'
 ```
 4. Pour faire tourner le serveur en local, vous pouvez utiliser MAMP :
 ```
