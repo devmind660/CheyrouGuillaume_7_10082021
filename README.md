@@ -6,7 +6,7 @@ Lancement de l'app Groupomania
 Groupomania/backend/package.json
 Groupomania/frontend/package.json
 ```
-2. Créez le fichier .env dans le dossier backend
+2. Créez le fichier ".env" dans le dossier backend.
 ```
 Groupomania/backend/.env
 ```
@@ -19,14 +19,28 @@ PASSWORD=root,
 DATABASE=groupomania
 TOKEN='gdci6ks37ndk9bv'
 ```
-4. Pour faire tourner le serveur en local, vous pouvez utiliser MAMP :
+4. Pour faire tourner le serveur en local, vous pouvez utiliser MAMP, téléchargez-le ici :
 ```
 https://www.mamp.info/fr/mamp/windows/
 https://www.mamp.info/fr/mamp/mac/
 ```
-5. Lancez MAMP et cliquez sur Start/Stop the servers
-
-6. Lancez le serveur et le client dans le terminal
+5. Ouvrez MAMP puis accédez à PhpMyAdmin.
+```
+MAMP : WebStart > Tools > PhpMyAdmin
+```
+6. Créez une nouvelle base de données nommée Groupomania.
+```
+PhpMyAdmin : Nouvelle base de données > Nom de base de données : "Groupomania" > Créer
+```
+7. Sélectionnez-la et importez le fichier "Groupomania.sql".
+```
+PhpMyAdmin : Groupomania > Importer > Choisir un fichier : "Groupomania/Groupomania.sql" > Exécuter
+```
+8. Lancez le serveur local avec MAMP.
+```
+MAMP : Start (Start/Stop the servers)
+```
+9. Lancez le serveur et le client dans le terminal
 
 Terminal 1 :
 ```
@@ -38,7 +52,7 @@ Terminal 2 :
   Groupomania % cd frontend
      frontend % npm run serve
 ```
-7. L'application tourne à l'adresse suivante :
+10. L'application tourne à l'adresse suivante :
 ```
 http://localhost:8080/
 ```
